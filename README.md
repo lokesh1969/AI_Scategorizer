@@ -10,6 +10,20 @@ Upload a PDF, Word, Excel, text file or scanned image. The system:
 
 📘 **Full documentation:** [PROJECT.md](PROJECT.md) covers the architecture, how each pipeline step works, the API, roles, setup on Windows and macOS/Linux, and the research and paper guide.
 
+## Getting the project (teammates)
+
+The trained model (`models/classifier/model.safetensors`, 268 MB) is stored with **Git LFS**, so install it before cloning:
+
+```bash
+git lfs install
+git clone https://github.com/lokesh1969/AI_Scategorizer.git
+cd AI_Scategorizer
+git lfs pull          # only needed if the model file is a tiny text pointer
+```
+
+Then follow the Quick start below. Not in the repo on purpose: `.env` (copy `.env.example`), the local database (created on first start, with the demo users) and `backend/uploads/`.
+Research data (`research/data/`) and all experiment outputs (`research/results/`) are included; see [PROJECT.md §12](PROJECT.md#12-research-guide-turning-this-into-a-paper) and `research/paper/paper_draft.md` for where the work stands.
+
 ## Quick start
 
 ```bash

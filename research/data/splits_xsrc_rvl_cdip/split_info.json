@@ -1,0 +1,42 @@
+{
+  "input": "C:\\Users\\lp507\\Downloads\\Capstone\\AI_Scategorizer\\research\\data\\dataset.csv",
+  "seed": 42,
+  "holdout_source": "rvl_cdip",
+  "rows_raw": 1199,
+  "rows_after_dedup": 1199,
+  "conflicting_texts_removed": 0,
+  "sizes": {
+    "train": 814,
+    "val": 175,
+    "test": 210
+  },
+  "label_counts": {
+    "train": {
+      "OPERATIONS": 247,
+      "LEGAL": 246,
+      "HR": 173,
+      "FINANCE": 148
+    },
+    "val": {
+      "LEGAL": 53,
+      "OPERATIONS": 53,
+      "HR": 37,
+      "FINANCE": 32
+    },
+    "test": {
+      "FINANCE": 120,
+      "HR": 90
+    }
+  },
+  "language_counts": {
+    "train": {
+      "English": 814
+    },
+    "val": {
+      "English": 175
+    },
+    "test": {
+      "English": 210
+    }
+  }
+}
