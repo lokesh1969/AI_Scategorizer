@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import api from '../services/api';
 import { useAuth } from '../context/AuthContext';
+import { API_ORIGIN, CATEGORIES, DEPARTMENTS, REVIEWER_ROLES } from '../constants';
 import { 
   FileText, 
   Sparkles, 
@@ -33,19 +34,30 @@ export const DocumentDetail = () => {
   const [verifiedCategory, setVerifiedCategory] = useState('');
   const [verificationNotes, setVerificationNotes] = useState('');
   const [submittingVerification, setSubmittingVerification] = useState(false);
+  const [sysThreshold, setSysThreshold] = useState(40.0);
 
   // Image Preview Toggle (Original vs Preprocessed)
   const [showPreprocessed, setShowPreprocessed] = useState(true);
 
   useEffect(() => {
     fetchDocument();
+    fetchSettings();
   }, [id]);
+
+  const fetchSettings = async () => {
+    try {
+      const res = await api.get('/settings');
+      setSysThreshold(res.data.confidence_threshold);
+    } catch (err) {
+      console.error('Failed to fetch settings', err);
+    }
+  };
 
   const fetchDocument = async () => {
     try {
       const res = await api.get(`/documents/${id}`);
       setDoc(res.data);
-      setVerifiedCategory(res.data.classification?.predicted_category || 'SAFETY');
+      setVerifiedCategory(CATEGORIES.includes(res.data.classification?.predicted_category) ? res.data.classification.predicted_category : 'OPERATIONS');
     } catch (err) {
       setError(err.response?.data?.detail || 'Failed to load document details');
     } finally {
@@ -62,7 +74,7 @@ export const DocumentDetail = () => {
         notes: verificationNotes
       });
       alert('Human verification submitted successfully!');
-      fetchDocument();
+      navigate('/');
     } catch (err) {
       alert(err.response?.data?.detail || 'Verification submission failed');
     } finally {
@@ -77,7 +89,7 @@ export const DocumentDetail = () => {
   const probs = doc.classification?.probabilities || {};
   const isHumanReq = doc.verification_status === 'HUMAN VERIFICATION REQUIRED';
 
-  const canVerify = ['ADMIN', 'STATION_CONTROLLER', 'FINANCE_MANAGER', 'MAINTENANCE_HEAD'].includes(user?.role);
+  const canVerify = ['ADMIN', ...REVIEWER_ROLES].includes(user?.role);
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
@@ -126,7 +138,7 @@ export const DocumentDetail = () => {
                 Human Verification Required
               </h3>
               <p style={{ fontSize: '0.85rem', color: '#cbd5e1', marginTop: '4px' }}>
-                AI classification confidence ({doc.classification?.confidence}%) is below the configured system threshold (70.0%). This document has been routed to the Human Verification Queue for manual review and category confirmation.
+                AI classification confidence ({doc.classification?.confidence}%) is below the configured system threshold ({sysThreshold}%). This document has been routed to the Human Verification Queue for manual review and category confirmation.
               </p>
             </div>
           </div>
@@ -154,7 +166,7 @@ export const DocumentDetail = () => {
 
               <div style={{ textAlign: 'right' }}>
                 <div style={{ fontSize: '0.75rem', color: '#64748b', textTransform: 'uppercase' }}>Confidence Score</div>
-                <div style={{ fontSize: '1.4rem', fontWeight: 700, color: doc.classification?.confidence >= 70 ? '#34d399' : '#fbbf24', marginTop: '2px' }}>
+                <div style={{ fontSize: '1.4rem', fontWeight: 700, color: doc.classification?.confidence >= sysThreshold ? '#34d399' : '#fbbf24', marginTop: '2px' }}>
                   {doc.classification?.confidence}%
                 </div>
               </div>
@@ -309,7 +321,7 @@ export const DocumentDetail = () => {
             {doc.ocr_metadata?.preprocessed_image_url && (
               <div style={{ marginTop: '16px', textAlign: 'center' }}>
                 <img 
-                  src={`http://localhost:8000${doc.ocr_metadata.preprocessed_image_url}`} 
+                  src={`${API_ORIGIN}${doc.ocr_metadata.preprocessed_image_url}`} 
                   alt="Preprocessed Preview" 
                   style={{ maxWidth: '100%', maxHeight: '240px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.1)' }}
                 />
@@ -371,10 +383,9 @@ export const DocumentDetail = () => {
                       outline: 'none'
                     }}
                   >
-                    <option value="SAFETY">SAFETY (Route to Station Controller)</option>
-                    <option value="OPERATIONS">OPERATIONS (Route to Station Controller)</option>
-                    <option value="FINANCE">FINANCE (Route to Finance Manager)</option>
-                    <option value="MAINTENANCE">MAINTENANCE (Route to Maintenance Head)</option>
+                    {CATEGORIES.map((c) => (
+                      <option key={c} value={c}>{c} (Route to {DEPARTMENTS[c]})</option>
+                    ))}
                   </select>
                 </div>
 

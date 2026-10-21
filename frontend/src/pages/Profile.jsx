@@ -15,26 +15,32 @@ export const Profile = () => {
       'View system-wide security audit logs',
       'Configure AI confidence thresholds & system settings'
     ],
-    STATION_CONTROLLER: [
-      'Access SAFETY and OPERATIONS department documents',
-      'Review and verify flagged low-confidence documents',
-      'View document AI summaries, entities, and sentiment',
-      'Access executive telemetry dashboard'
-    ],
     FINANCE_MANAGER: [
-      'Access FINANCE department documents and invoices',
-      'Review and verify flagged low-confidence financial records',
+      'Access FINANCE department documents (invoices, budgets, payments)',
+      'Review and verify documents in the human verification queue',
       'View document AI summaries, extracted amounts, and entities',
-      'Access executive telemetry dashboard'
+      'Access department dashboard'
     ],
-    MAINTENANCE_HEAD: [
-      'Access MAINTENANCE department documents & equipment fault reports',
-      'Review and verify flagged low-confidence maintenance logs',
-      'View document AI summaries, equipment entities, and priority',
-      'Access executive telemetry dashboard'
+    HR_MANAGER: [
+      'Access HR department documents (resumes, leave, policies)',
+      'Review and verify documents in the human verification queue',
+      'View document AI summaries, entities, and sentiment',
+      'Access department dashboard'
+    ],
+    LEGAL_COUNSEL: [
+      'Access LEGAL department documents (contracts, notices, compliance)',
+      'Review and verify documents in the human verification queue',
+      'View document AI summaries, entities, and priority',
+      'Access department dashboard'
+    ],
+    OPERATIONS_MANAGER: [
+      'Access OPERATIONS department documents (logistics, reports, memos)',
+      'Review and verify documents in the human verification queue',
+      'View document AI summaries, entities, and priority',
+      'Access department dashboard'
     ],
     UPLOADER: [
-      'Upload new documents to MetroMind processing engine',
+      'Upload new documents to AI Scategorizer processing engine',
       'View ONLY self-uploaded documents and telemetry results',
       'View self-document summaries, OCR text, and classification',
       'Access personal dashboard analytics'

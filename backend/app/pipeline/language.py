@@ -3,40 +3,37 @@ from langdetect import detect, DetectorFactory
 
 DetectorFactory.seed = 0
 
+DEVANAGARI_WORD = re.compile(r"[ऀ-ॿ]+")
+LATIN_WORD = re.compile(r"[A-Za-z]{2,}")
+
+# A script must make up at least this share of words for the text to count as mixed,
+# so a Hindi letter that quotes one English acronym is still "Hindi".
+MIXED_MIN_SHARE = 0.10
+
+
 def detect_language(text: str) -> str:
     """
-    Detects whether text is 'English', 'Hindi', or 'Mixed (Hindi + English)'.
-    Uses character set count (Devanagari vs Latin) and langdetect algorithm.
+    Returns 'English', 'Hindi', or 'Mixed (Hindi + English)' using word-level
+    script counts, with langdetect as a tie-breaker for Latin-only text.
     """
     if not text or not text.strip():
         return "English"
 
-    # Count Devanagari Unicode characters (U+0900 to U+097F)
-    devanagari_chars = len(re.findall(r'[\u0900-\u097F]', text))
-    latin_chars = len(re.findall(r'[a-zA-Z]', text))
-
-    total_chars = devanagari_chars + latin_chars
-    if total_chars == 0:
+    dev_words = len(DEVANAGARI_WORD.findall(text))
+    lat_words = len(LATIN_WORD.findall(text))
+    total = dev_words + lat_words
+    if total == 0:
         return "English"
 
-    # If both Devanagari script and Latin characters are present
-    if devanagari_chars >= 1 and latin_chars >= 3:
+    dev_share = dev_words / total
+    if dev_words and lat_words and MIXED_MIN_SHARE <= dev_share <= 1 - MIXED_MIN_SHARE:
         return "Mixed (Hindi + English)"
-
-    if devanagari_chars > 0 and latin_chars == 0:
-        return "Hindi"
-
-    dev_ratio = devanagari_chars / total_chars if total_chars else 0
-    if dev_ratio > 0.70:
+    if dev_share > 0.5:
         return "Hindi"
 
     try:
-        detected = detect(text)
-        if detected == 'hi':
+        if detect(text) == "hi":
             return "Hindi"
-        elif detected == 'en':
-            return "English"
     except Exception:
         pass
-
     return "English"

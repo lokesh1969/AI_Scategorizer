@@ -1,0 +1,6 @@
+,accuracy,accuracy,macro_f1,macro_f1,ece_before,ece_before,ece_after,ece_after,threshold,threshold,auto_routed_pct,auto_routed_pct,auto_routed_acc,auto_routed_acc,aurc,aurc
+,mean,std,mean,std,mean,std,mean,std,mean,std,mean,std,mean,std,mean,std
+model,,,,,,,,,,,,,,,,
+distilbert,0.9778,0.0056,0.9777,0.0056,0.0168,0.0058,0.0195,0.0059,0.0,0.0,100.0,0.0,0.9778,0.0056,0.0012,0.0003
+roberta,0.9759,0.0085,0.9759,0.0085,0.0164,0.0014,0.0179,0.0014,0.0,0.0,100.0,0.0,0.9759,0.0085,0.0018,0.0007
+tfidf_lr,0.9833,,0.9833,,0.2505,,0.0139,,0.0,,100.0,,0.9833,,0.0011,

@@ -118,21 +118,21 @@ code, pre {
 }
 
 /* Category Badges */
-.cat-safety {
-  background: rgba(244, 63, 94, 0.15);
-  color: #fda4af;
-  border: 1px solid rgba(244, 63, 94, 0.3);
-}
+.cat-hr {
+    background: rgba(139, 92, 246, 0.15); /* Purple */
+    color: #c4b5fd;
+    border: 1px solid rgba(139, 92, 246, 0.3);
+  }
 .cat-finance {
   background: rgba(16, 185, 129, 0.15);
   color: #6ee7b7;
   border: 1px solid rgba(16, 185, 129, 0.3);
 }
-.cat-maintenance {
-  background: rgba(245, 158, 11, 0.15);
-  color: #fde047;
-  border: 1px solid rgba(245, 158, 11, 0.3);
-}
+.cat-legal {
+    background: rgba(245, 158, 11, 0.15); /* Orange/Yellow */
+    color: #fde047;
+    border: 1px solid rgba(245, 158, 11, 0.3);
+  }
 .cat-operations {
   background: rgba(6, 182, 212, 0.15);
   color: #67e8f9;

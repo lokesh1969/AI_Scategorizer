@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../services/api';
+import { CATEGORIES } from '../constants';
 import { useAuth } from '../context/AuthContext';
 import { Search, Filter, Eye, Trash2, Shield, CheckCircle2, AlertTriangle } from 'lucide-react';
 
@@ -103,10 +104,8 @@ export const Documents = () => {
           }}
         >
           <option value="">All Categories</option>
-          <option value="SAFETY">SAFETY</option>
-          <option value="FINANCE">FINANCE</option>
-          <option value="MAINTENANCE">MAINTENANCE</option>
-          <option value="OPERATIONS">OPERATIONS</option>
+          {CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
+          <option value="UNCLASSIFIED">UNCLASSIFIED</option>
         </select>
 
         {/* Priority Filter */}

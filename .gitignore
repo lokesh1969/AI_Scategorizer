@@ -40,3 +40,23 @@ backend/uploads/preprocessed/
 */.DS_Store
 .vscode/
 .idea/
+
+# Model weights (too large for git; share via Hugging Face Hub, Drive or Git LFS)
+models/**/*.safetensors
+models/**/*.bin
+models/**/*.pt
+
+# Research outputs (checkpoints are large; keep eval/ reports if you want them versioned)
+research/results/**/checkpoints/
+research/results/**/model/
+research/results/**/model.joblib
+
+# Archives (Colab upload/download bundles)
+*.zip
+
+# Raw document text: rebuild with `python research/build_dataset.py` (contains real resumes
+# and CC BY-NC tickets, so it is not redistributed). Metrics, tables and figures are kept.
+research/data/dataset.csv
+research/data/splits*/
+research/results/**/predictions_*.csv
+research/results/**/errors.csv

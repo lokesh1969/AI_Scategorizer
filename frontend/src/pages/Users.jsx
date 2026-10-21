@@ -140,9 +140,10 @@ export const Users = () => {
                         }}
                       >
                         <option value="ADMIN">ADMIN</option>
-                        <option value="STATION_CONTROLLER">STATION_CONTROLLER</option>
+                        <option value="OPERATIONS_MANAGER">OPERATIONS_MANAGER</option>
                         <option value="FINANCE_MANAGER">FINANCE_MANAGER</option>
-                        <option value="MAINTENANCE_HEAD">MAINTENANCE_HEAD</option>
+                        <option value="HR_MANAGER">HR_MANAGER</option>
+                        <option value="LEGAL_COUNSEL">LEGAL_COUNSEL</option>
                         <option value="UPLOADER">UPLOADER</option>
                       </select>
                     </td>
@@ -215,7 +216,7 @@ export const Users = () => {
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="user@metromind.local"
+                  placeholder="user@aiscategorizer.local"
                   style={{ width: '100%', padding: '10px', background: 'rgba(15,23,42,0.8)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '6px', color: '#fff', fontSize: '0.85rem' }}
                 />
               </div>
@@ -240,9 +241,10 @@ export const Users = () => {
                   style={{ width: '100%', padding: '10px', background: 'rgba(15,23,42,0.8)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '6px', color: '#fff', fontSize: '0.85rem' }}
                 >
                   <option value="UPLOADER">UPLOADER</option>
-                  <option value="STATION_CONTROLLER">STATION_CONTROLLER</option>
+                  <option value="OPERATIONS_MANAGER">OPERATIONS_MANAGER</option>
                   <option value="FINANCE_MANAGER">FINANCE_MANAGER</option>
-                  <option value="MAINTENANCE_HEAD">MAINTENANCE_HEAD</option>
+                  <option value="HR_MANAGER">HR_MANAGER</option>
+                  <option value="LEGAL_COUNSEL">LEGAL_COUNSEL</option>
                   <option value="ADMIN">ADMIN</option>
                 </select>
               </div>

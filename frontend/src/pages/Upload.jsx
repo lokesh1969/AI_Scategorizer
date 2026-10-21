@@ -181,7 +181,7 @@ export const Upload = () => {
                 <Cpu size={32} color="#06b6d4" className="animate-spin" />
               </div>
               <h2 style={{ fontSize: '1.2rem', fontWeight: 700, color: '#f8fafc' }}>
-                MetroMind Pipeline Execution
+                AI Scategorizer Pipeline Execution
               </h2>
               <p style={{ fontSize: '0.85rem', color: '#94a3b8', marginTop: '4px' }}>
                 Processing document: {file?.name}

@@ -1,6 +1,7 @@
 import axios from 'axios';
+import { API_ORIGIN } from '../constants';
 
-const API_BASE_URL = 'http://localhost:8000/api';
+const API_BASE_URL = `${API_ORIGIN}/api`;
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -11,7 +12,7 @@ const api = axios.create({
 
 api.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('metromind_token');
+    const token = localStorage.getItem('AI Scategorizer_token');
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -24,8 +25,8 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response && error.response.status === 401) {
-      localStorage.removeItem('metromind_token');
-      localStorage.removeItem('metromind_user');
+      localStorage.removeItem('AI Scategorizer_token');
+      localStorage.removeItem('AI Scategorizer_user');
       if (window.location.pathname !== '/login') {
         window.location.href = '/login';
       }

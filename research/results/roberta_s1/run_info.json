@@ -1,0 +1,21 @@
+{
+  "model": "roberta-base",
+  "labels": [
+    "FINANCE",
+    "HR",
+    "LEGAL",
+    "OPERATIONS"
+  ],
+  "seed": 1,
+  "epochs": 5,
+  "learning_rate": 3e-05,
+  "batch_size": 16,
+  "max_length": 256,
+  "best_checkpoint": "results/roberta_s1/checkpoints/checkpoint-212",
+  "val_macro_f1": 0.9944,
+  "train_minutes": 1.98,
+  "inference_ms_per_doc": 3.668,
+  "device": "cuda",
+  "parameters_millions": 124.6,
+  "train_size": 839
+}

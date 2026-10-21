@@ -1,6 +1,7 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { ALL_ROLES, REVIEWER_ROLES } from '../constants';
 import { 
   LayoutDashboard, 
   FileText, 
@@ -19,14 +20,14 @@ export const Sidebar = () => {
   const role = user.role;
 
   const allNavItems = [
-    { label: 'Dashboard', path: '/dashboard', icon: LayoutDashboard, roles: ['ADMIN', 'STATION_CONTROLLER', 'FINANCE_MANAGER', 'MAINTENANCE_HEAD', 'UPLOADER'] },
-    { label: 'Documents', path: '/documents', icon: FileText, roles: ['ADMIN', 'STATION_CONTROLLER', 'FINANCE_MANAGER', 'MAINTENANCE_HEAD', 'UPLOADER'] },
+    { label: 'Dashboard', path: '/dashboard', icon: LayoutDashboard, roles: ALL_ROLES },
+    { label: 'Documents', path: '/documents', icon: FileText, roles: ALL_ROLES },
     { label: 'Upload', path: '/upload', icon: Upload, roles: ['ADMIN', 'UPLOADER'] },
-    { label: 'Human Verification', path: '/verification', icon: CheckCircle2, roles: ['ADMIN', 'STATION_CONTROLLER', 'FINANCE_MANAGER', 'MAINTENANCE_HEAD'] },
+    { label: 'Human Verification', path: '/verification', icon: CheckCircle2, roles: ['ADMIN', ...REVIEWER_ROLES] },
     { label: 'User Management', path: '/users', icon: Users, roles: ['ADMIN'] },
     { label: 'Audit Logs', path: '/audit-logs', icon: History, roles: ['ADMIN'] },
     { label: 'System Settings', path: '/settings', icon: Settings, roles: ['ADMIN'] },
-    { label: 'My Profile', path: '/profile', icon: User, roles: ['ADMIN', 'STATION_CONTROLLER', 'FINANCE_MANAGER', 'MAINTENANCE_HEAD', 'UPLOADER'] },
+    { label: 'My Profile', path: '/profile', icon: User, roles: ALL_ROLES },
   ];
 
   const filteredItems = allNavItems.filter(item => item.roles.includes(role));

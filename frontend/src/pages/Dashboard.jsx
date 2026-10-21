@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../services/api';
+import { CATEGORY_COLORS } from '../constants';
 import { 
   FileText, 
   CheckCircle2, 
@@ -36,7 +37,7 @@ export const Dashboard = () => {
   if (loading) {
     return (
       <div style={{ padding: '40px', color: '#94a3b8' }}>
-        Loading MetroMind Command Center Analytics...
+        Loading AI Scategorizer Command Center Analytics...
       </div>
     );
   }
@@ -143,7 +144,7 @@ export const Dashboard = () => {
           <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
             {Object.entries(stats.category_counts || {}).map(([cat, count]) => {
               const pct = stats.total_documents > 0 ? Math.round((count / stats.total_documents) * 100) : 0;
-              const colorMap = { SAFETY: '#f43f5e', FINANCE: '#10b981', MAINTENANCE: '#f59e0b', OPERATIONS: '#06b6d4' };
+              const colorMap = CATEGORY_COLORS;
               return (
                 <div key={cat}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', color: '#cbd5e1', marginBottom: '4px' }}>

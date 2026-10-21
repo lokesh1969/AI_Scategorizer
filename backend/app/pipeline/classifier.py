@@ -1,73 +1,69 @@
 import os
-import joblib
-import numpy as np
-from typing import Dict, Any, Tuple
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.linear_model import LogisticRegression
+from typing import Dict, Tuple
 from backend.app.core.config import settings
+from backend.app.core.categories import CATEGORIES
 
-CATEGORIES = ["SAFETY", "FINANCE", "MAINTENANCE", "OPERATIONS"]
+# Category returned when there is nothing to classify (blank scan, failed OCR,
+# missing model). It is not in DEPARTMENT_MAP, so routing always sends it to
+# the human verification queue instead of auto-approving it.
+UNCLASSIFIED = "UNCLASSIFIED"
+
+# Minimum non-whitespace characters before the model output is trusted
+MIN_TEXT_CHARS = 20
+
 
 class DocumentClassifier:
-    def __init__(self):
-        self.model = None
-        self.vectorizer = None
+    """Wraps a fine-tuned Hugging Face sequence classifier (see research/train_transformer.py)."""
+
+    def __init__(self, model_dir: str = settings.MODEL_DIR):
+        self.model_dir = model_dir
+        self.hf_model = None
+        self.hf_tokenizer = None
         self.is_loaded = False
+        self.model_name = "none"
         self.load_model()
 
     def load_model(self):
-        if os.path.exists(settings.MODEL_PATH):
-            try:
-                pipeline_data = joblib.load(settings.MODEL_PATH)
-                self.vectorizer = pipeline_data["vectorizer"]
-                self.model = pipeline_data["model"]
-                self.is_loaded = True
-                return
-            except Exception as e:
-                print(f"[Classifier Error] Error loading {settings.MODEL_PATH}: {e}")
-
-        # Fallback baseline model
-        training_corpus = [
-            ("Emergency fire alarm incident detected on platform 2 station area. Evacuate passengers immediately.", "SAFETY"),
-            ("Accidents report passenger injury near escalator. Medical assistance requested immediately.", "SAFETY"),
-            ("Hazard report gas leak near electrical room. Safety instructions issued to staff.", "SAFETY"),
-            ("प्लेटफॉर्म नंबर 2 पर आपातकालीन स्थिति उत्पन्न हुई। अग्निशामक टीम को सूचित किया गया।", "SAFETY"),
-            ("Invoice #4029 purchase order payment clearance for electrical equipment total amount ₹4,50,000.", "FINANCE"),
-            ("Quarterly expenditure report budget allocation statement for Q3 railway infrastructure.", "FINANCE"),
-            ("Track fault machinery failure maintenance schedule required urgently for train 102.", "MAINTENANCE"),
-            ("Equipment repair request HVAC system breakdown at Metro Station Central.", "MAINTENANCE"),
-            ("Daily station operational report train arrival schedule platform management administrative log.", "OPERATIONS"),
-            ("Shift handover log operational delay Metro line schedule optimization report.", "OPERATIONS")
-        ]
-
-        texts = [t[0] for t in training_corpus]
-        labels = [t[1] for t in training_corpus]
-
-        self.vectorizer = TfidfVectorizer(ngram_range=(1, 2), min_df=1, sublinear_tf=True)
-        X = self.vectorizer.fit_transform(texts)
-
-        self.model = LogisticRegression(C=10.0, max_iter=200, random_state=42)
-        self.model.fit(X, labels)
-        self.is_loaded = True
+        if not os.path.exists(os.path.join(self.model_dir, "config.json")):
+            print(f"[Classifier] No model found at {self.model_dir}. Documents will go to human verification.")
+            return
+        try:
+            # Imported lazily so the API (and its tests) can start without torch installed
+            from transformers import AutoModelForSequenceClassification, AutoTokenizer
+            self.hf_tokenizer = AutoTokenizer.from_pretrained(self.model_dir)
+            self.hf_model = AutoModelForSequenceClassification.from_pretrained(self.model_dir)
+            self.hf_model.eval()
+            self.model_name = getattr(self.hf_model.config, "_name_or_path", None) or os.path.basename(self.model_dir)
+            self.is_loaded = True
+        except Exception as e:
+            print(f"[Classifier Error] Error loading model from {self.model_dir}: {e}")
 
     def predict(self, text: str) -> Tuple[str, float, Dict[str, float]]:
-        if not text or not text.strip():
-            return "OPERATIONS", 50.0, {cat: 25.0 for cat in CATEGORIES}
+        """Returns (category, confidence %, {category: probability %})."""
+        empty_probs = {cat: 0.0 for cat in CATEGORIES}
+        if not text or len("".join(text.split())) < MIN_TEXT_CHARS:
+            return UNCLASSIFIED, 0.0, empty_probs
 
         if not self.is_loaded:
             self.load_model()
+        if not self.is_loaded:
+            return UNCLASSIFIED, 0.0, empty_probs
 
-        X_vec = self.vectorizer.transform([text])
-        probs = self.model.predict_proba(X_vec)[0]
-        classes = self.model.classes_
+        import torch
+        inputs = self.hf_tokenizer(text, return_tensors="pt", truncation=True, max_length=512)
+        inputs.pop("token_type_ids", None)
 
-        prob_dict = {cat: 0.0 for cat in CATEGORIES}
-        for cls, prob in zip(classes, probs):
-            prob_dict[cls] = round(float(prob * 100.0), 1)
+        with torch.no_grad():
+            logits = self.hf_model(**inputs).logits
+            probs = torch.nn.functional.softmax(logits, dim=-1)[0]
 
-        best_category = max(prob_dict, key=prob_dict.get)
-        confidence = prob_dict[best_category]
+        id2label = self.hf_model.config.id2label
+        prob_dict = {id2label[i].upper(): round(float(p) * 100.0, 1) for i, p in enumerate(probs)}
 
+        best_idx = int(torch.argmax(probs).item())
+        best_category = id2label[best_idx].upper()
+        confidence = round(float(probs[best_idx]) * 100.0, 1)
         return best_category, confidence, prob_dict
+
 
 classifier_engine = DocumentClassifier()

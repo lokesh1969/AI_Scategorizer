@@ -1,0 +1,11 @@
+# Research / training dependencies (in addition to backend/requirements.txt)
+torch>=2.2
+transformers>=4.46
+accelerate>=0.30
+scikit-learn>=1.4
+scipy>=1.11
+pandas>=2.0
+numpy>=1.26
+matplotlib>=3.8
+joblib>=1.3
+datasets>=2.19

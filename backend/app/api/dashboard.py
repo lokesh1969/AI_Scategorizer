@@ -1,17 +1,14 @@
 from fastapi import APIRouter, Depends
 from backend.app.db.database import db_adapter
 from backend.app.api.deps import get_current_user
+from backend.app.core.categories import CATEGORIES, can_view_document
 
 router = APIRouter(prefix="/dashboard", tags=["Dashboard & Analytics"])
 
 @router.get("/stats")
 def get_dashboard_stats(current_user: dict = Depends(get_current_user)):
-    role = current_user["role"]
-    query = {}
-    if role == "UPLOADER":
-        query["uploader_id"] = current_user["_id"]
-
-    all_docs = db_adapter.get_documents(query)
+    query = {"uploader_id": current_user["_id"]} if current_user["role"] == "UPLOADER" else {}
+    all_docs = [d for d in db_adapter.get_documents(query) if can_view_document(current_user, d)]
 
     total_docs = len(all_docs)
     processed = len([d for d in all_docs if d.get("processing_status") == "COMPLETED"])
@@ -26,13 +23,10 @@ def get_dashboard_stats(current_user: dict = Depends(get_current_user)):
             priority_counts[p_lvl] += 1
 
     # Categories
-    category_counts = {"SAFETY": 0, "FINANCE": 0, "MAINTENANCE": 0, "OPERATIONS": 0}
+    category_counts = {cat: 0 for cat in CATEGORIES}
     for d in all_docs:
-        cat = d.get("classification", {}).get("predicted_category", "OPERATIONS")
-        if cat in category_counts:
-            category_counts[cat] += 1
-        else:
-            category_counts[cat] = category_counts.get(cat, 0) + 1
+        cat = d.get("classification", {}).get("predicted_category", "UNCLASSIFIED")
+        category_counts[cat] = category_counts.get(cat, 0) + 1
 
     # Languages
     language_counts = {"English": 0, "Hindi": 0, "Mixed (Hindi + English)": 0}

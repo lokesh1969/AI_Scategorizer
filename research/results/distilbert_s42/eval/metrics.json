@@ -1,0 +1,307 @@
+{
+  "run": "distilbert_s42",
+  "model": "distilbert-base-uncased",
+  "n_test": 180,
+  "classes_in_test": [
+    "FINANCE",
+    "HR",
+    "LEGAL",
+    "OPERATIONS"
+  ],
+  "accuracy": 0.9833,
+  "accuracy_95ci": [
+    0.9611,
+    1.0
+  ],
+  "macro_f1": 0.9833,
+  "macro_f1_95ci": [
+    0.9631,
+    1.0
+  ],
+  "weighted_f1": 0.9833,
+  "per_class": {
+    "FINANCE": {
+      "precision": 1.0,
+      "recall": 0.9333333333333333,
+      "f1-score": 0.9655172413793104,
+      "support": 45.0
+    },
+    "HR": {
+      "precision": 0.9375,
+      "recall": 1.0,
+      "f1-score": 0.967741935483871,
+      "support": 45.0
+    },
+    "LEGAL": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 45.0
+    },
+    "OPERATIONS": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 45.0
+    },
+    "accuracy": 0.9833333333333333,
+    "macro avg": {
+      "precision": 0.984375,
+      "recall": 0.9833333333333334,
+      "f1-score": 0.9833147942157954,
+      "support": 180.0
+    },
+    "weighted avg": {
+      "precision": 0.984375,
+      "recall": 0.9833333333333333,
+      "f1-score": 0.9833147942157954,
+      "support": 180.0
+    }
+  },
+  "per_language": {
+    "English": {
+      "n": 180,
+      "accuracy": 0.9833,
+      "macro_f1": 0.9833
+    }
+  },
+  "confusion_matrix": {
+    "labels": [
+      "FINANCE",
+      "HR",
+      "LEGAL",
+      "OPERATIONS"
+    ],
+    "matrix": [
+      [
+        42,
+        3,
+        0,
+        0
+      ],
+      [
+        0,
+        45,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        45,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        45
+      ]
+    ]
+  },
+  "calibration": {
+    "temperature": 0.8105,
+    "ece_before": 0.0155,
+    "ece_after": 0.0147,
+    "nll_before": 0.0732,
+    "nll_after": 0.0744,
+    "brier_before": 0.032,
+    "brier_after": 0.0326
+  },
+  "selective_routing": {
+    "target_auto_accuracy": 0.95,
+    "threshold_chosen_on_val": 0.0,
+    "test_at_threshold": {
+      "threshold": 0.0,
+      "auto_routed_pct": 100.0,
+      "human_review_pct": 0.0,
+      "auto_routed_accuracy": 0.9833,
+      "misrouted_docs_per_1000": 16.7,
+      "system_accuracy_with_review": 0.9833
+    },
+    "aurc": 0.0016,
+    "sweep": [
+      {
+        "threshold": 0.0,
+        "auto_routed_pct": 100.0,
+        "human_review_pct": 0.0,
+        "auto_routed_accuracy": 0.9833,
+        "misrouted_docs_per_1000": 16.7,
+        "system_accuracy_with_review": 0.9833
+      },
+      {
+        "threshold": 0.05,
+        "auto_routed_pct": 100.0,
+        "human_review_pct": 0.0,
+        "auto_routed_accuracy": 0.9833,
+        "misrouted_docs_per_1000": 16.7,
+        "system_accuracy_with_review": 0.9833
+      },
+      {
+        "threshold": 0.1,
+        "auto_routed_pct": 100.0,
+        "human_review_pct": 0.0,
+        "auto_routed_accuracy": 0.9833,
+        "misrouted_docs_per_1000": 16.7,
+        "system_accuracy_with_review": 0.9833
+      },
+      {
+        "threshold": 0.15,
+        "auto_routed_pct": 100.0,
+        "human_review_pct": 0.0,
+        "auto_routed_accuracy": 0.9833,
+        "misrouted_docs_per_1000": 16.7,
+        "system_accuracy_with_review": 0.9833
+      },
+      {
+        "threshold": 0.2,
+        "auto_routed_pct": 100.0,
+        "human_review_pct": 0.0,
+        "auto_routed_accuracy": 0.9833,
+        "misrouted_docs_per_1000": 16.7,
+        "system_accuracy_with_review": 0.9833
+      },
+      {
+        "threshold": 0.25,
+        "auto_routed_pct": 100.0,
+        "human_review_pct": 0.0,
+        "auto_routed_accuracy": 0.9833,
+        "misrouted_docs_per_1000": 16.7,
+        "system_accuracy_with_review": 0.9833
+      },
+      {
+        "threshold": 0.3,
+        "auto_routed_pct": 100.0,
+        "human_review_pct": 0.0,
+        "auto_routed_accuracy": 0.9833,
+        "misrouted_docs_per_1000": 16.7,
+        "system_accuracy_with_review": 0.9833
+      },
+      {
+        "threshold": 0.35,
+        "auto_routed_pct": 100.0,
+        "human_review_pct": 0.0,
+        "auto_routed_accuracy": 0.9833,
+        "misrouted_docs_per_1000": 16.7,
+        "system_accuracy_with_review": 0.9833
+      },
+      {
+        "threshold": 0.4,
+        "auto_routed_pct": 100.0,
+        "human_review_pct": 0.0,
+        "auto_routed_accuracy": 0.9833,
+        "misrouted_docs_per_1000": 16.7,
+        "system_accuracy_with_review": 0.9833
+      },
+      {
+        "threshold": 0.45,
+        "auto_routed_pct": 100.0,
+        "human_review_pct": 0.0,
+        "auto_routed_accuracy": 0.9833,
+        "misrouted_docs_per_1000": 16.7,
+        "system_accuracy_with_review": 0.9833
+      },
+      {
+        "threshold": 0.5,
+        "auto_routed_pct": 100.0,
+        "human_review_pct": 0.0,
+        "auto_routed_accuracy": 0.9833,
+        "misrouted_docs_per_1000": 16.7,
+        "system_accuracy_with_review": 0.9833
+      },
+      {
+        "threshold": 0.55,
+        "auto_routed_pct": 100.0,
+        "human_review_pct": 0.0,
+        "auto_routed_accuracy": 0.9833,
+        "misrouted_docs_per_1000": 16.7,
+        "system_accuracy_with_review": 0.9833
+      },
+      {
+        "threshold": 0.6,
+        "auto_routed_pct": 100.0,
+        "human_review_pct": 0.0,
+        "auto_routed_accuracy": 0.9833,
+        "misrouted_docs_per_1000": 16.7,
+        "system_accuracy_with_review": 0.9833
+      },
+      {
+        "threshold": 0.65,
+        "auto_routed_pct": 99.44,
+        "human_review_pct": 0.56,
+        "auto_routed_accuracy": 0.9832,
+        "misrouted_docs_per_1000": 16.7,
+        "system_accuracy_with_review": 0.9833
+      },
+      {
+        "threshold": 0.7,
+        "auto_routed_pct": 99.44,
+        "human_review_pct": 0.56,
+        "auto_routed_accuracy": 0.9832,
+        "misrouted_docs_per_1000": 16.7,
+        "system_accuracy_with_review": 0.9833
+      },
+      {
+        "threshold": 0.75,
+        "auto_routed_pct": 99.44,
+        "human_review_pct": 0.56,
+        "auto_routed_accuracy": 0.9832,
+        "misrouted_docs_per_1000": 16.7,
+        "system_accuracy_with_review": 0.9833
+      },
+      {
+        "threshold": 0.8,
+        "auto_routed_pct": 98.89,
+        "human_review_pct": 1.11,
+        "auto_routed_accuracy": 0.9831,
+        "misrouted_docs_per_1000": 16.7,
+        "system_accuracy_with_review": 0.9833
+      },
+      {
+        "threshold": 0.85,
+        "auto_routed_pct": 98.89,
+        "human_review_pct": 1.11,
+        "auto_routed_accuracy": 0.9831,
+        "misrouted_docs_per_1000": 16.7,
+        "system_accuracy_with_review": 0.9833
+      },
+      {
+        "threshold": 0.9,
+        "auto_routed_pct": 97.78,
+        "human_review_pct": 2.22,
+        "auto_routed_accuracy": 0.983,
+        "misrouted_docs_per_1000": 16.7,
+        "system_accuracy_with_review": 0.9833
+      },
+      {
+        "threshold": 0.95,
+        "auto_routed_pct": 96.11,
+        "human_review_pct": 3.89,
+        "auto_routed_accuracy": 0.9942,
+        "misrouted_docs_per_1000": 5.6,
+        "system_accuracy_with_review": 0.9944
+      }
+    ]
+  },
+  "run_info": {
+    "model": "distilbert-base-uncased",
+    "labels": [
+      "FINANCE",
+      "HR",
+      "LEGAL",
+      "OPERATIONS"
+    ],
+    "seed": 42,
+    "epochs": 5,
+    "learning_rate": 3e-05,
+    "batch_size": 16,
+    "max_length": 256,
+    "best_checkpoint": "results/distilbert_s42/checkpoints/checkpoint-212",
+    "val_macro_f1": 0.9835,
+    "train_minutes": 0.82,
+    "inference_ms_per_doc": 1.708,
+    "device": "cuda",
+    "parameters_millions": 67.0,
+    "train_size": 839
+  }
+}

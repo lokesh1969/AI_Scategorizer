@@ -1,73 +1,73 @@
-import re
-from typing import Tuple, Dict, Any
+from typing import Tuple
+from backend.app.pipeline.text_utils import find_keywords
 
+# Rule-based heuristic (not a learned model). Keywords are matched as whole
+# tokens/phrases, so "fire" does not fire on "firewall" or "fired".
 CRITICAL_KEYWORDS = [
-    "fire", "explosion", "accident", "injury", "fatal", "emergency", "gas leak",
-    "evacuation", "terror", "hazard", "threat", "casualty", "collapse",
-    "आपातकालीन", "आग", "दुर्घटना", "घायल", "खतरा", "इमरजेंसी", "धमाका"
+    "fire", "explosion", "accident", "injury", "injuries", "fatal", "emergency", "gas leak",
+    "evacuation", "hazard", "casualty", "collapse", "data breach", "court order",
+    "summons", "arrest warrant", "harassment", "fraud",
+    "आपातकालीन", "आग", "दुर्घटना", "घायल", "खतरा", "इमरजेंसी", "धमाका", "धोखाधड़ी", "उत्पीड़न"
 ]
 
 HIGH_KEYWORDS = [
-    "breakdown", "fault", "defect", "failure", "halt", "urgent", "stoppage",
-    "delay", "breach", "complaint", "power outage", "derailment",
-    "खराबी", "तकनिकी समस्या", "रुकावट", "तुरंत", "गंभीर", "मशीन बंद"
+    "breakdown", "fault", "defect", "failure", "outage", "urgent", "urgently", "immediately",
+    "stoppage", "delay", "breach", "complaint", "lawsuit", "legal notice", "penalty",
+    "overdue", "deadline", "termination", "dispute", "non-compliance", "escalation",
+    "खराबी", "रुकावट", "तुरंत", "गंभीर", "शिकायत", "जुर्माना", "समय सीमा", "कानूनी नोटिस"
 ]
 
 MEDIUM_KEYWORDS = [
-    "invoice", "budget", "expenditure", "payment", "due date", "servicing",
-    "inspection", "schedule", "audit", "purchase order",
-    "बजट", "भुगतान", "इनवॉइस", "निरीक्षण", "मरम्मत"
+    "invoice", "budget", "expenditure", "payment", "due date", "inspection", "schedule",
+    "audit", "purchase order", "contract", "agreement", "renewal", "appraisal", "leave",
+    "बजट", "भुगतान", "इनवॉइस", "निरीक्षण", "अनुबंध", "छुट्टी"
 ]
+
+# Baseline urgency contributed by the predicted category
+CATEGORY_BASE = {
+    "LEGAL": 25,
+    "OPERATIONS": 20,
+    "FINANCE": 15,
+    "HR": 10,
+}
+
 
 def calculate_priority(category: str, text: str) -> Tuple[str, int, str]:
     """
-    Evaluates urgency and priority level of document text based on category + emergency context.
-    Returns: (priority_level, score, reason_description)
+    Evaluates urgency of a document from category context + keyword evidence.
+    Returns: (priority_level, score 0-100, reason_description)
     """
-    text_lower = text.lower()
+    found_critical = find_keywords(text, CRITICAL_KEYWORDS)
+    found_high = find_keywords(text, HIGH_KEYWORDS)
+    found_medium = find_keywords(text, MEDIUM_KEYWORDS)
 
-    # Find matching keywords
-    found_critical = [kw for kw in CRITICAL_KEYWORDS if kw in text_lower]
-    found_high = [kw for kw in HIGH_KEYWORDS if kw in text_lower]
-    found_medium = [kw for kw in MEDIUM_KEYWORDS if kw in text_lower]
-
-    base_score = 30
-    if category == "SAFETY":
-        base_score += 35
-    elif category == "MAINTENANCE":
-        base_score += 25
-    elif category == "OPERATIONS":
-        base_score += 20
-    elif category == "FINANCE":
-        base_score += 15
-
-    # Keyword bonuses
+    score = 30 + CATEGORY_BASE.get(category, 0)
     if found_critical:
-        base_score += 35 + (len(found_critical) * 5)
+        score += 40 + len(found_critical) * 5
     elif found_high:
-        base_score += 25 + (len(found_high) * 3)
+        score += 25 + len(found_high) * 3
     elif found_medium:
-        base_score += 15
+        score += 10
 
-    score = min(99, max(15, base_score))
+    score = min(99, max(15, score))
 
     if score >= 85:
         level = "CRITICAL"
         if found_critical:
-            reason = f"Safety-related emergency incident detected. Found emergency terms: '{', '.join(found_critical[:3])}'."
+            reason = f"Critical incident terms detected: '{', '.join(found_critical[:3])}'."
         else:
-            reason = f"Critical document severity evaluated for category '{category}'."
+            reason = f"Critical severity evaluated for category '{category}'."
     elif score >= 65:
         level = "HIGH"
         if found_high:
-            reason = f"High priority operational/equipment disruption detected. Found terms: '{', '.join(found_high[:3])}'."
+            reason = f"Urgent or disruptive terms detected: '{', '.join(found_high[:3])}'."
         else:
-            reason = f"High priority rating assigned based on '{category}' category impact."
+            reason = f"High priority based on '{category}' category impact."
     elif score >= 40:
         level = "MEDIUM"
-        reason = f"Standard medium priority operational/financial document."
+        reason = "Standard business document."
     else:
         level = "LOW"
-        reason = f"Routine low priority administrative document."
+        reason = "Routine low priority document."
 
     return level, score, reason

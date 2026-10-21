@@ -1,0 +1,298 @@
+{
+  "run": "xsrc_rvl_cdip_tfidf_lr",
+  "model": "TF-IDF (word+char) + Logistic Regression",
+  "n_test": 210,
+  "classes_in_test": [
+    "FINANCE",
+    "HR"
+  ],
+  "accuracy": 0.5476,
+  "accuracy_95ci": [
+    0.4762,
+    0.6144
+  ],
+  "macro_f1": 0.6835,
+  "macro_f1_95ci": [
+    0.6245,
+    0.7387
+  ],
+  "weighted_f1": 0.6573,
+  "per_class": {
+    "FINANCE": {
+      "precision": 1.0,
+      "recall": 0.3333333333333333,
+      "f1-score": 0.5,
+      "support": 120.0
+    },
+    "HR": {
+      "precision": 0.9036144578313253,
+      "recall": 0.8333333333333334,
+      "f1-score": 0.8670520231213873,
+      "support": 90.0
+    },
+    "LEGAL": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1-score": 0.0,
+      "support": 0.0
+    },
+    "OPERATIONS": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1-score": 0.0,
+      "support": 0.0
+    },
+    "accuracy": 0.5476190476190477,
+    "macro avg": {
+      "precision": 0.47590361445783136,
+      "recall": 0.2916666666666667,
+      "f1-score": 0.3417630057803468,
+      "support": 210.0
+    },
+    "weighted avg": {
+      "precision": 0.9586919104991395,
+      "recall": 0.5476190476190477,
+      "f1-score": 0.6573080099091659,
+      "support": 210.0
+    }
+  },
+  "per_language": {
+    "English": {
+      "n": 210,
+      "accuracy": 0.5476,
+      "macro_f1": 0.6835
+    }
+  },
+  "confusion_matrix": {
+    "labels": [
+      "FINANCE",
+      "HR",
+      "LEGAL",
+      "OPERATIONS"
+    ],
+    "matrix": [
+      [
+        40,
+        8,
+        72,
+        0
+      ],
+      [
+        0,
+        75,
+        15,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0
+      ]
+    ]
+  },
+  "calibration": {
+    "temperature": 0.2409,
+    "ece_before": 0.1399,
+    "ece_after": 0.2357,
+    "nll_before": 1.0607,
+    "nll_after": 1.2113,
+    "brier_before": 0.5731,
+    "brier_after": 0.6167
+  },
+  "selective_routing": {
+    "target_auto_accuracy": 0.95,
+    "threshold_chosen_on_val": 0.0,
+    "test_at_threshold": {
+      "threshold": 0.0,
+      "auto_routed_pct": 100.0,
+      "human_review_pct": 0.0,
+      "auto_routed_accuracy": 0.5476,
+      "misrouted_docs_per_1000": 452.4,
+      "system_accuracy_with_review": 0.5476
+    },
+    "aurc": 0.2748,
+    "sweep": [
+      {
+        "threshold": 0.0,
+        "auto_routed_pct": 100.0,
+        "human_review_pct": 0.0,
+        "auto_routed_accuracy": 0.5476,
+        "misrouted_docs_per_1000": 452.4,
+        "system_accuracy_with_review": 0.5476
+      },
+      {
+        "threshold": 0.05,
+        "auto_routed_pct": 100.0,
+        "human_review_pct": 0.0,
+        "auto_routed_accuracy": 0.5476,
+        "misrouted_docs_per_1000": 452.4,
+        "system_accuracy_with_review": 0.5476
+      },
+      {
+        "threshold": 0.1,
+        "auto_routed_pct": 100.0,
+        "human_review_pct": 0.0,
+        "auto_routed_accuracy": 0.5476,
+        "misrouted_docs_per_1000": 452.4,
+        "system_accuracy_with_review": 0.5476
+      },
+      {
+        "threshold": 0.15,
+        "auto_routed_pct": 100.0,
+        "human_review_pct": 0.0,
+        "auto_routed_accuracy": 0.5476,
+        "misrouted_docs_per_1000": 452.4,
+        "system_accuracy_with_review": 0.5476
+      },
+      {
+        "threshold": 0.2,
+        "auto_routed_pct": 100.0,
+        "human_review_pct": 0.0,
+        "auto_routed_accuracy": 0.5476,
+        "misrouted_docs_per_1000": 452.4,
+        "system_accuracy_with_review": 0.5476
+      },
+      {
+        "threshold": 0.25,
+        "auto_routed_pct": 100.0,
+        "human_review_pct": 0.0,
+        "auto_routed_accuracy": 0.5476,
+        "misrouted_docs_per_1000": 452.4,
+        "system_accuracy_with_review": 0.5476
+      },
+      {
+        "threshold": 0.3,
+        "auto_routed_pct": 100.0,
+        "human_review_pct": 0.0,
+        "auto_routed_accuracy": 0.5476,
+        "misrouted_docs_per_1000": 452.4,
+        "system_accuracy_with_review": 0.5476
+      },
+      {
+        "threshold": 0.35,
+        "auto_routed_pct": 100.0,
+        "human_review_pct": 0.0,
+        "auto_routed_accuracy": 0.5476,
+        "misrouted_docs_per_1000": 452.4,
+        "system_accuracy_with_review": 0.5476
+      },
+      {
+        "threshold": 0.4,
+        "auto_routed_pct": 99.05,
+        "human_review_pct": 0.95,
+        "auto_routed_accuracy": 0.5481,
+        "misrouted_docs_per_1000": 447.6,
+        "system_accuracy_with_review": 0.5524
+      },
+      {
+        "threshold": 0.45,
+        "auto_routed_pct": 98.1,
+        "human_review_pct": 1.9,
+        "auto_routed_accuracy": 0.5534,
+        "misrouted_docs_per_1000": 438.1,
+        "system_accuracy_with_review": 0.5619
+      },
+      {
+        "threshold": 0.5,
+        "auto_routed_pct": 92.86,
+        "human_review_pct": 7.14,
+        "auto_routed_accuracy": 0.5744,
+        "misrouted_docs_per_1000": 395.2,
+        "system_accuracy_with_review": 0.6048
+      },
+      {
+        "threshold": 0.55,
+        "auto_routed_pct": 86.67,
+        "human_review_pct": 13.33,
+        "auto_routed_accuracy": 0.5879,
+        "misrouted_docs_per_1000": 357.1,
+        "system_accuracy_with_review": 0.6429
+      },
+      {
+        "threshold": 0.6,
+        "auto_routed_pct": 79.05,
+        "human_review_pct": 20.95,
+        "auto_routed_accuracy": 0.5964,
+        "misrouted_docs_per_1000": 319.0,
+        "system_accuracy_with_review": 0.681
+      },
+      {
+        "threshold": 0.65,
+        "auto_routed_pct": 70.95,
+        "human_review_pct": 29.05,
+        "auto_routed_accuracy": 0.6309,
+        "misrouted_docs_per_1000": 261.9,
+        "system_accuracy_with_review": 0.7381
+      },
+      {
+        "threshold": 0.7,
+        "auto_routed_pct": 64.29,
+        "human_review_pct": 35.71,
+        "auto_routed_accuracy": 0.637,
+        "misrouted_docs_per_1000": 233.3,
+        "system_accuracy_with_review": 0.7667
+      },
+      {
+        "threshold": 0.75,
+        "auto_routed_pct": 59.05,
+        "human_review_pct": 40.95,
+        "auto_routed_accuracy": 0.6532,
+        "misrouted_docs_per_1000": 204.8,
+        "system_accuracy_with_review": 0.7952
+      },
+      {
+        "threshold": 0.8,
+        "auto_routed_pct": 55.24,
+        "human_review_pct": 44.76,
+        "auto_routed_accuracy": 0.6724,
+        "misrouted_docs_per_1000": 181.0,
+        "system_accuracy_with_review": 0.819
+      },
+      {
+        "threshold": 0.85,
+        "auto_routed_pct": 47.62,
+        "human_review_pct": 52.38,
+        "auto_routed_accuracy": 0.7,
+        "misrouted_docs_per_1000": 142.9,
+        "system_accuracy_with_review": 0.8571
+      },
+      {
+        "threshold": 0.9,
+        "auto_routed_pct": 36.67,
+        "human_review_pct": 63.33,
+        "auto_routed_accuracy": 0.8052,
+        "misrouted_docs_per_1000": 71.4,
+        "system_accuracy_with_review": 0.9286
+      },
+      {
+        "threshold": 0.95,
+        "auto_routed_pct": 21.9,
+        "human_review_pct": 78.1,
+        "auto_routed_accuracy": 0.8478,
+        "misrouted_docs_per_1000": 33.3,
+        "system_accuracy_with_review": 0.9667
+      }
+    ]
+  },
+  "run_info": {
+    "model": "TF-IDF (word+char) + Logistic Regression",
+    "best_C": 4.0,
+    "val_macro_f1": 0.9927,
+    "labels": [
+      "FINANCE",
+      "HR",
+      "LEGAL",
+      "OPERATIONS"
+    ],
+    "seed": 42,
+    "inference_ms_per_doc_cpu": 2.249,
+    "train_size": 814
+  }
+}

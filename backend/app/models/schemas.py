@@ -4,15 +4,16 @@ from pydantic import BaseModel, EmailStr, Field
 
 class UserRole(str, Enum):
     ADMIN = "ADMIN"
-    STATION_CONTROLLER = "STATION_CONTROLLER"
     FINANCE_MANAGER = "FINANCE_MANAGER"
-    MAINTENANCE_HEAD = "MAINTENANCE_HEAD"
+    HR_MANAGER = "HR_MANAGER"
+    LEGAL_COUNSEL = "LEGAL_COUNSEL"
+    OPERATIONS_MANAGER = "OPERATIONS_MANAGER"
     UPLOADER = "UPLOADER"
 
 class DocumentCategory(str, Enum):
-    SAFETY = "SAFETY"
     FINANCE = "FINANCE"
-    MAINTENANCE = "MAINTENANCE"
+    HR = "HR"
+    LEGAL = "LEGAL"
     OPERATIONS = "OPERATIONS"
 
 class PriorityLevel(str, Enum):
@@ -38,8 +39,8 @@ class TokenResponse(BaseModel):
 
 class UserCreate(BaseModel):
     email: EmailStr
-    name: str
-    password: str
+    name: str = Field(min_length=1, max_length=100)
+    password: str = Field(min_length=8, max_length=72)
     role: UserRole
 
 class UserUpdate(BaseModel):
@@ -87,7 +88,7 @@ class OCRMetadata(BaseModel):
 # Verification Schema
 class VerificationInput(BaseModel):
     verified_category: str
-    notes: Optional[str] = ""
+    notes: Optional[str] = Field("", max_length=2000)
 
 # Document Schema
 class DocumentResponse(BaseModel):
@@ -142,5 +143,4 @@ class AuditLogItem(BaseModel):
         populate_by_name = True
 
 class SettingsUpdate(BaseModel):
-    confidence_threshold: float
-    categories: Optional[List[str]] = None
+    confidence_threshold: Optional[float] = Field(None, ge=0.0, le=100.0)

@@ -12,11 +12,12 @@ export const Login = () => {
   const navigate = useNavigate();
 
   const demoAccounts = [
-    { label: 'System Admin', email: 'admin@metromind.local', pass: 'admin123', role: 'ADMIN', color: '#8b5cf6' },
-    { label: 'Station Controller', email: 'station@metromind.local', pass: 'station123', role: 'STATION_CONTROLLER', color: '#06b6d4' },
-    { label: 'Finance Manager', email: 'finance@metromind.local', pass: 'finance123', role: 'FINANCE_MANAGER', color: '#10b981' },
-    { label: 'Maintenance Head', email: 'maintenance@metromind.local', pass: 'maint123', role: 'MAINTENANCE_HEAD', color: '#f59e0b' },
-    { label: 'Document Uploader', email: 'uploader@metromind.local', pass: 'user123', role: 'UPLOADER', color: '#3b82f6' }
+    { label: 'System Admin', email: 'admin@aiscategorizer.local', pass: 'admin123', role: 'ADMIN', color: '#8b5cf6' },
+    { label: 'Finance Manager', email: 'finance@aiscategorizer.local', pass: 'finance123', role: 'FINANCE_MANAGER', color: '#10b981' },
+    { label: 'HR Manager', email: 'hr@aiscategorizer.local', pass: 'hr123', role: 'HR_MANAGER', color: '#8b5cf6' },
+    { label: 'Legal Counsel', email: 'legal@aiscategorizer.local', pass: 'legal123', role: 'LEGAL_COUNSEL', color: '#f59e0b' },
+    { label: 'Operations Manager', email: 'operations@aiscategorizer.local', pass: 'ops123', role: 'OPERATIONS_MANAGER', color: '#06b6d4' },
+    { label: 'Document Uploader', email: 'uploader@aiscategorizer.local', pass: 'user123', role: 'UPLOADER', color: '#3b82f6' }
   ];
 
   const handleSelectDemo = (acc) => {
@@ -66,7 +67,7 @@ export const Login = () => {
             <Sparkles size={32} color="#ffffff" />
           </div>
           <h1 style={{ fontSize: '1.75rem', fontWeight: 800, letterSpacing: '-0.02em', color: '#f8fafc' }}>
-            MetroMind
+            AI Scategorizer
           </h1>
           <p style={{ fontSize: '0.875rem', color: '#94a3b8', marginTop: '6px' }}>
             Intelligent Enterprise Document Classification & Routing System
@@ -104,7 +105,7 @@ export const Login = () => {
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="name@metromind.local"
+                  placeholder="name@aiscategorizer.local"
                   required
                   style={{
                     width: '100%',

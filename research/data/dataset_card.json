@@ -1,0 +1,23 @@
+{
+  "rows": 1199,
+  "per_label": {
+    "OPERATIONS": 300,
+    "FINANCE": 300,
+    "HR": 300,
+    "LEGAL": 299
+  },
+  "per_label_source": {
+    "OPERATIONS / maib_incidents": 150,
+    "LEGAL / ledgar": 180,
+    "FINANCE / rvl_cdip": 120,
+    "HR / support_tickets": 90,
+    "FINANCE / support_tickets": 90,
+    "LEGAL / unfair_tos": 119,
+    "FINANCE / invoices_ocr": 90,
+    "HR / rvl_cdip": 90,
+    "OPERATIONS / support_tickets": 150,
+    "HR / kaggle_resume": 120
+  },
+  "synthetic_share": 0.35,
+  "seed": 42
+}

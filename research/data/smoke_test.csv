@@ -1,0 +1,9 @@
+text,expected_department
+"Invoice for 50 laptops and IT supplies",FINANCE
+"Please review the attached contract for the new vendor",LEGAL
+"Employee performance review and vacation request",HR
+"The server rack in data center 3 is overheating, we need immediate maintenance",OPERATIONS
+"Quarterly budget report and tax filings for Q3",FINANCE
+"Non-disclosure agreement signed by the contractor",LEGAL
+"Onboarding documents for the new software engineer",HR
+"Train schedule delays on the blue line due to signal failure",OPERATIONS

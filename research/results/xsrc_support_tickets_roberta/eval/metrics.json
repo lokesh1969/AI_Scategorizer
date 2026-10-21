@@ -1,0 +1,306 @@
+{
+  "run": "xsrc_support_tickets_roberta",
+  "model": "roberta-base",
+  "n_test": 330,
+  "classes_in_test": [
+    "FINANCE",
+    "HR",
+    "OPERATIONS"
+  ],
+  "accuracy": 0.3788,
+  "accuracy_95ci": [
+    0.3273,
+    0.4273
+  ],
+  "macro_f1": 0.3259,
+  "macro_f1_95ci": [
+    0.2842,
+    0.3681
+  ],
+  "weighted_f1": 0.3879,
+  "per_class": {
+    "FINANCE": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1-score": 0.0,
+      "support": 90.0
+    },
+    "HR": {
+      "precision": 0.4666666666666667,
+      "recall": 0.23333333333333334,
+      "f1-score": 0.3111111111111111,
+      "support": 90.0
+    },
+    "LEGAL": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1-score": 0.0,
+      "support": 0.0
+    },
+    "OPERATIONS": {
+      "precision": 0.6419753086419753,
+      "recall": 0.6933333333333334,
+      "f1-score": 0.6666666666666666,
+      "support": 150.0
+    },
+    "accuracy": 0.3787878787878788,
+    "macro avg": {
+      "precision": 0.27716049382716046,
+      "recall": 0.2316666666666667,
+      "f1-score": 0.24444444444444444,
+      "support": 330.0
+    },
+    "weighted avg": {
+      "precision": 0.41907968574635246,
+      "recall": 0.3787878787878788,
+      "f1-score": 0.3878787878787879,
+      "support": 330.0
+    }
+  },
+  "per_language": {
+    "English": {
+      "n": 330,
+      "accuracy": 0.3788,
+      "macro_f1": 0.3259
+    }
+  },
+  "confusion_matrix": {
+    "labels": [
+      "FINANCE",
+      "HR",
+      "LEGAL",
+      "OPERATIONS"
+    ],
+    "matrix": [
+      [
+        0,
+        2,
+        69,
+        19
+      ],
+      [
+        0,
+        21,
+        30,
+        39
+      ],
+      [
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        22,
+        24,
+        104
+      ]
+    ]
+  },
+  "calibration": {
+    "temperature": 0.079,
+    "ece_before": 0.5136,
+    "ece_after": 0.6153,
+    "nll_before": 3.4369,
+    "nll_after": 16.3364,
+    "brier_before": 1.1098,
+    "brier_after": 1.2312
+  },
+  "selective_routing": {
+    "target_auto_accuracy": 0.95,
+    "threshold_chosen_on_val": 0.0,
+    "test_at_threshold": {
+      "threshold": 0.0,
+      "auto_routed_pct": 100.0,
+      "human_review_pct": 0.0,
+      "auto_routed_accuracy": 0.3788,
+      "misrouted_docs_per_1000": 621.2,
+      "system_accuracy_with_review": 0.3788
+    },
+    "aurc": 0.5566,
+    "sweep": [
+      {
+        "threshold": 0.0,
+        "auto_routed_pct": 100.0,
+        "human_review_pct": 0.0,
+        "auto_routed_accuracy": 0.3788,
+        "misrouted_docs_per_1000": 621.2,
+        "system_accuracy_with_review": 0.3788
+      },
+      {
+        "threshold": 0.05,
+        "auto_routed_pct": 100.0,
+        "human_review_pct": 0.0,
+        "auto_routed_accuracy": 0.3788,
+        "misrouted_docs_per_1000": 621.2,
+        "system_accuracy_with_review": 0.3788
+      },
+      {
+        "threshold": 0.1,
+        "auto_routed_pct": 100.0,
+        "human_review_pct": 0.0,
+        "auto_routed_accuracy": 0.3788,
+        "misrouted_docs_per_1000": 621.2,
+        "system_accuracy_with_review": 0.3788
+      },
+      {
+        "threshold": 0.15,
+        "auto_routed_pct": 100.0,
+        "human_review_pct": 0.0,
+        "auto_routed_accuracy": 0.3788,
+        "misrouted_docs_per_1000": 621.2,
+        "system_accuracy_with_review": 0.3788
+      },
+      {
+        "threshold": 0.2,
+        "auto_routed_pct": 100.0,
+        "human_review_pct": 0.0,
+        "auto_routed_accuracy": 0.3788,
+        "misrouted_docs_per_1000": 621.2,
+        "system_accuracy_with_review": 0.3788
+      },
+      {
+        "threshold": 0.25,
+        "auto_routed_pct": 100.0,
+        "human_review_pct": 0.0,
+        "auto_routed_accuracy": 0.3788,
+        "misrouted_docs_per_1000": 621.2,
+        "system_accuracy_with_review": 0.3788
+      },
+      {
+        "threshold": 0.3,
+        "auto_routed_pct": 100.0,
+        "human_review_pct": 0.0,
+        "auto_routed_accuracy": 0.3788,
+        "misrouted_docs_per_1000": 621.2,
+        "system_accuracy_with_review": 0.3788
+      },
+      {
+        "threshold": 0.35,
+        "auto_routed_pct": 100.0,
+        "human_review_pct": 0.0,
+        "auto_routed_accuracy": 0.3788,
+        "misrouted_docs_per_1000": 621.2,
+        "system_accuracy_with_review": 0.3788
+      },
+      {
+        "threshold": 0.4,
+        "auto_routed_pct": 100.0,
+        "human_review_pct": 0.0,
+        "auto_routed_accuracy": 0.3788,
+        "misrouted_docs_per_1000": 621.2,
+        "system_accuracy_with_review": 0.3788
+      },
+      {
+        "threshold": 0.45,
+        "auto_routed_pct": 100.0,
+        "human_review_pct": 0.0,
+        "auto_routed_accuracy": 0.3788,
+        "misrouted_docs_per_1000": 621.2,
+        "system_accuracy_with_review": 0.3788
+      },
+      {
+        "threshold": 0.5,
+        "auto_routed_pct": 100.0,
+        "human_review_pct": 0.0,
+        "auto_routed_accuracy": 0.3788,
+        "misrouted_docs_per_1000": 621.2,
+        "system_accuracy_with_review": 0.3788
+      },
+      {
+        "threshold": 0.55,
+        "auto_routed_pct": 100.0,
+        "human_review_pct": 0.0,
+        "auto_routed_accuracy": 0.3788,
+        "misrouted_docs_per_1000": 621.2,
+        "system_accuracy_with_review": 0.3788
+      },
+      {
+        "threshold": 0.6,
+        "auto_routed_pct": 100.0,
+        "human_review_pct": 0.0,
+        "auto_routed_accuracy": 0.3788,
+        "misrouted_docs_per_1000": 621.2,
+        "system_accuracy_with_review": 0.3788
+      },
+      {
+        "threshold": 0.65,
+        "auto_routed_pct": 99.39,
+        "human_review_pct": 0.61,
+        "auto_routed_accuracy": 0.378,
+        "misrouted_docs_per_1000": 618.2,
+        "system_accuracy_with_review": 0.3818
+      },
+      {
+        "threshold": 0.7,
+        "auto_routed_pct": 99.09,
+        "human_review_pct": 0.91,
+        "auto_routed_accuracy": 0.3761,
+        "misrouted_docs_per_1000": 618.2,
+        "system_accuracy_with_review": 0.3818
+      },
+      {
+        "threshold": 0.75,
+        "auto_routed_pct": 98.79,
+        "human_review_pct": 1.21,
+        "auto_routed_accuracy": 0.3773,
+        "misrouted_docs_per_1000": 615.2,
+        "system_accuracy_with_review": 0.3848
+      },
+      {
+        "threshold": 0.8,
+        "auto_routed_pct": 98.48,
+        "human_review_pct": 1.52,
+        "auto_routed_accuracy": 0.3785,
+        "misrouted_docs_per_1000": 612.1,
+        "system_accuracy_with_review": 0.3879
+      },
+      {
+        "threshold": 0.85,
+        "auto_routed_pct": 97.88,
+        "human_review_pct": 2.12,
+        "auto_routed_accuracy": 0.3808,
+        "misrouted_docs_per_1000": 606.1,
+        "system_accuracy_with_review": 0.3939
+      },
+      {
+        "threshold": 0.9,
+        "auto_routed_pct": 96.67,
+        "human_review_pct": 3.33,
+        "auto_routed_accuracy": 0.3856,
+        "misrouted_docs_per_1000": 593.9,
+        "system_accuracy_with_review": 0.4061
+      },
+      {
+        "threshold": 0.95,
+        "auto_routed_pct": 96.67,
+        "human_review_pct": 3.33,
+        "auto_routed_accuracy": 0.3856,
+        "misrouted_docs_per_1000": 593.9,
+        "system_accuracy_with_review": 0.4061
+      }
+    ]
+  },
+  "run_info": {
+    "model": "roberta-base",
+    "labels": [
+      "FINANCE",
+      "HR",
+      "LEGAL",
+      "OPERATIONS"
+    ],
+    "seed": 42,
+    "epochs": 5,
+    "learning_rate": 3e-05,
+    "batch_size": 16,
+    "max_length": 256,
+    "best_checkpoint": "results/xsrc_support_tickets_roberta/checkpoints/checkpoint-90",
+    "val_macro_f1": 1.0,
+    "train_minutes": 3.57,
+    "inference_ms_per_doc": 2.105,
+    "device": "cuda",
+    "parameters_millions": 124.6,
+    "train_size": 715
+  }
+}

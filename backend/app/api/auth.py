@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, status, Depends
+from fastapi import APIRouter, HTTPException, Request, status, Depends
 from backend.app.models.schemas import UserLogin, TokenResponse
 from backend.app.core.security import verify_password, create_access_token
 from backend.app.db.database import db_adapter
@@ -7,7 +7,7 @@ from backend.app.api.deps import get_current_user
 router = APIRouter(prefix="/auth", tags=["Authentication"])
 
 @router.post("/login", response_model=TokenResponse)
-def login(credentials: UserLogin):
+def login(credentials: UserLogin, request: Request):
     user = db_adapter.get_user_by_email(credentials.email)
     if not user or not verify_password(credentials.password, user["password_hash"]):
         raise HTTPException(
@@ -25,7 +25,7 @@ def login(credentials: UserLogin):
     db_adapter.insert_audit_log({
         "user_email": user["email"],
         "action": "LOGIN",
-        "details": {"role": user["role"], "ip": "127.0.0.1"}
+        "details": {"role": user["role"], "ip": request.client.host if request.client else None}
     })
 
     user_data = {

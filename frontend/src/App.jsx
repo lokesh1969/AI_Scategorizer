@@ -13,6 +13,7 @@ import { Users } from './pages/Users';
 import { AuditLogs } from './pages/AuditLogs';
 import { Settings } from './pages/Settings';
 import { Profile } from './pages/Profile';
+import { REVIEWER_ROLES } from './constants';
 
 const ProtectedLayout = ({ children, allowedRoles }) => {
   const { user, loading } = useAuth();
@@ -88,7 +89,7 @@ export default function App() {
           <Route
             path="/verification"
             element={
-              <ProtectedLayout allowedRoles={['ADMIN', 'STATION_CONTROLLER', 'FINANCE_MANAGER', 'MAINTENANCE_HEAD']}>
+              <ProtectedLayout allowedRoles={['ADMIN', ...REVIEWER_ROLES]}>
                 <VerificationQueue />
               </ProtectedLayout>
             }

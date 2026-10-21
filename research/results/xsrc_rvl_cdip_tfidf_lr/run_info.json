@@ -1,0 +1,14 @@
+{
+  "model": "TF-IDF (word+char) + Logistic Regression",
+  "best_C": 4.0,
+  "val_macro_f1": 0.9927,
+  "labels": [
+    "FINANCE",
+    "HR",
+    "LEGAL",
+    "OPERATIONS"
+  ],
+  "seed": 42,
+  "inference_ms_per_doc_cpu": 2.249,
+  "train_size": 814
+}

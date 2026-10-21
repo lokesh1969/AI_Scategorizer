@@ -1,0 +1,307 @@
+{
+  "run": "distilbert_s1",
+  "model": "distilbert-base-uncased",
+  "n_test": 180,
+  "classes_in_test": [
+    "FINANCE",
+    "HR",
+    "LEGAL",
+    "OPERATIONS"
+  ],
+  "accuracy": 0.9722,
+  "accuracy_95ci": [
+    0.9444,
+    0.9944
+  ],
+  "macro_f1": 0.9722,
+  "macro_f1_95ci": [
+    0.945,
+    0.9942
+  ],
+  "weighted_f1": 0.9722,
+  "per_class": {
+    "FINANCE": {
+      "precision": 1.0,
+      "recall": 0.9333333333333333,
+      "f1-score": 0.9655172413793104,
+      "support": 45.0
+    },
+    "HR": {
+      "precision": 0.9347826086956522,
+      "recall": 0.9555555555555556,
+      "f1-score": 0.945054945054945,
+      "support": 45.0
+    },
+    "LEGAL": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 45.0
+    },
+    "OPERATIONS": {
+      "precision": 0.9574468085106383,
+      "recall": 1.0,
+      "f1-score": 0.9782608695652174,
+      "support": 45.0
+    },
+    "accuracy": 0.9722222222222222,
+    "macro avg": {
+      "precision": 0.9730573543015727,
+      "recall": 0.9722222222222222,
+      "f1-score": 0.9722082639998681,
+      "support": 180.0
+    },
+    "weighted avg": {
+      "precision": 0.9730573543015726,
+      "recall": 0.9722222222222222,
+      "f1-score": 0.9722082639998681,
+      "support": 180.0
+    }
+  },
+  "per_language": {
+    "English": {
+      "n": 180,
+      "accuracy": 0.9722,
+      "macro_f1": 0.9722
+    }
+  },
+  "confusion_matrix": {
+    "labels": [
+      "FINANCE",
+      "HR",
+      "LEGAL",
+      "OPERATIONS"
+    ],
+    "matrix": [
+      [
+        42,
+        3,
+        0,
+        0
+      ],
+      [
+        0,
+        43,
+        0,
+        2
+      ],
+      [
+        0,
+        0,
+        45,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        45
+      ]
+    ]
+  },
+  "calibration": {
+    "temperature": 0.7801,
+    "ece_before": 0.0232,
+    "ece_after": 0.026,
+    "nll_before": 0.105,
+    "nll_after": 0.1124,
+    "brier_before": 0.0501,
+    "brier_after": 0.053
+  },
+  "selective_routing": {
+    "target_auto_accuracy": 0.95,
+    "threshold_chosen_on_val": 0.0,
+    "test_at_threshold": {
+      "threshold": 0.0,
+      "auto_routed_pct": 100.0,
+      "human_review_pct": 0.0,
+      "auto_routed_accuracy": 0.9722,
+      "misrouted_docs_per_1000": 27.8,
+      "system_accuracy_with_review": 0.9722
+    },
+    "aurc": 0.0011,
+    "sweep": [
+      {
+        "threshold": 0.0,
+        "auto_routed_pct": 100.0,
+        "human_review_pct": 0.0,
+        "auto_routed_accuracy": 0.9722,
+        "misrouted_docs_per_1000": 27.8,
+        "system_accuracy_with_review": 0.9722
+      },
+      {
+        "threshold": 0.05,
+        "auto_routed_pct": 100.0,
+        "human_review_pct": 0.0,
+        "auto_routed_accuracy": 0.9722,
+        "misrouted_docs_per_1000": 27.8,
+        "system_accuracy_with_review": 0.9722
+      },
+      {
+        "threshold": 0.1,
+        "auto_routed_pct": 100.0,
+        "human_review_pct": 0.0,
+        "auto_routed_accuracy": 0.9722,
+        "misrouted_docs_per_1000": 27.8,
+        "system_accuracy_with_review": 0.9722
+      },
+      {
+        "threshold": 0.15,
+        "auto_routed_pct": 100.0,
+        "human_review_pct": 0.0,
+        "auto_routed_accuracy": 0.9722,
+        "misrouted_docs_per_1000": 27.8,
+        "system_accuracy_with_review": 0.9722
+      },
+      {
+        "threshold": 0.2,
+        "auto_routed_pct": 100.0,
+        "human_review_pct": 0.0,
+        "auto_routed_accuracy": 0.9722,
+        "misrouted_docs_per_1000": 27.8,
+        "system_accuracy_with_review": 0.9722
+      },
+      {
+        "threshold": 0.25,
+        "auto_routed_pct": 100.0,
+        "human_review_pct": 0.0,
+        "auto_routed_accuracy": 0.9722,
+        "misrouted_docs_per_1000": 27.8,
+        "system_accuracy_with_review": 0.9722
+      },
+      {
+        "threshold": 0.3,
+        "auto_routed_pct": 100.0,
+        "human_review_pct": 0.0,
+        "auto_routed_accuracy": 0.9722,
+        "misrouted_docs_per_1000": 27.8,
+        "system_accuracy_with_review": 0.9722
+      },
+      {
+        "threshold": 0.35,
+        "auto_routed_pct": 100.0,
+        "human_review_pct": 0.0,
+        "auto_routed_accuracy": 0.9722,
+        "misrouted_docs_per_1000": 27.8,
+        "system_accuracy_with_review": 0.9722
+      },
+      {
+        "threshold": 0.4,
+        "auto_routed_pct": 100.0,
+        "human_review_pct": 0.0,
+        "auto_routed_accuracy": 0.9722,
+        "misrouted_docs_per_1000": 27.8,
+        "system_accuracy_with_review": 0.9722
+      },
+      {
+        "threshold": 0.45,
+        "auto_routed_pct": 100.0,
+        "human_review_pct": 0.0,
+        "auto_routed_accuracy": 0.9722,
+        "misrouted_docs_per_1000": 27.8,
+        "system_accuracy_with_review": 0.9722
+      },
+      {
+        "threshold": 0.5,
+        "auto_routed_pct": 100.0,
+        "human_review_pct": 0.0,
+        "auto_routed_accuracy": 0.9722,
+        "misrouted_docs_per_1000": 27.8,
+        "system_accuracy_with_review": 0.9722
+      },
+      {
+        "threshold": 0.55,
+        "auto_routed_pct": 100.0,
+        "human_review_pct": 0.0,
+        "auto_routed_accuracy": 0.9722,
+        "misrouted_docs_per_1000": 27.8,
+        "system_accuracy_with_review": 0.9722
+      },
+      {
+        "threshold": 0.6,
+        "auto_routed_pct": 99.44,
+        "human_review_pct": 0.56,
+        "auto_routed_accuracy": 0.9721,
+        "misrouted_docs_per_1000": 27.8,
+        "system_accuracy_with_review": 0.9722
+      },
+      {
+        "threshold": 0.65,
+        "auto_routed_pct": 99.44,
+        "human_review_pct": 0.56,
+        "auto_routed_accuracy": 0.9721,
+        "misrouted_docs_per_1000": 27.8,
+        "system_accuracy_with_review": 0.9722
+      },
+      {
+        "threshold": 0.7,
+        "auto_routed_pct": 99.44,
+        "human_review_pct": 0.56,
+        "auto_routed_accuracy": 0.9721,
+        "misrouted_docs_per_1000": 27.8,
+        "system_accuracy_with_review": 0.9722
+      },
+      {
+        "threshold": 0.75,
+        "auto_routed_pct": 98.89,
+        "human_review_pct": 1.11,
+        "auto_routed_accuracy": 0.9719,
+        "misrouted_docs_per_1000": 27.8,
+        "system_accuracy_with_review": 0.9722
+      },
+      {
+        "threshold": 0.8,
+        "auto_routed_pct": 98.89,
+        "human_review_pct": 1.11,
+        "auto_routed_accuracy": 0.9719,
+        "misrouted_docs_per_1000": 27.8,
+        "system_accuracy_with_review": 0.9722
+      },
+      {
+        "threshold": 0.85,
+        "auto_routed_pct": 98.89,
+        "human_review_pct": 1.11,
+        "auto_routed_accuracy": 0.9719,
+        "misrouted_docs_per_1000": 27.8,
+        "system_accuracy_with_review": 0.9722
+      },
+      {
+        "threshold": 0.9,
+        "auto_routed_pct": 98.33,
+        "human_review_pct": 1.67,
+        "auto_routed_accuracy": 0.9774,
+        "misrouted_docs_per_1000": 22.2,
+        "system_accuracy_with_review": 0.9778
+      },
+      {
+        "threshold": 0.95,
+        "auto_routed_pct": 97.22,
+        "human_review_pct": 2.78,
+        "auto_routed_accuracy": 0.9886,
+        "misrouted_docs_per_1000": 11.1,
+        "system_accuracy_with_review": 0.9889
+      }
+    ]
+  },
+  "run_info": {
+    "model": "distilbert-base-uncased",
+    "labels": [
+      "FINANCE",
+      "HR",
+      "LEGAL",
+      "OPERATIONS"
+    ],
+    "seed": 1,
+    "epochs": 5,
+    "learning_rate": 3e-05,
+    "batch_size": 16,
+    "max_length": 256,
+    "best_checkpoint": "results/distilbert_s1/checkpoints/checkpoint-159",
+    "val_macro_f1": 0.9834,
+    "train_minutes": 0.98,
+    "inference_ms_per_doc": 1.8,
+    "device": "cuda",
+    "parameters_millions": 67.0,
+    "train_size": 839
+  }
+}

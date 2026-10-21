@@ -8,9 +8,10 @@ export const Navbar = () => {
   const getRoleBadgeClass = (role) => {
     switch (role) {
       case 'ADMIN': return 'bg-purple-500/20 text-purple-300 border-purple-500/30';
-      case 'STATION_CONTROLLER': return 'bg-cyan-500/20 text-cyan-300 border-cyan-500/30';
       case 'FINANCE_MANAGER': return 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30';
-      case 'MAINTENANCE_HEAD': return 'bg-amber-500/20 text-amber-300 border-amber-500/30';
+      case 'HR_MANAGER': return 'bg-violet-500/20 text-violet-300 border-violet-500/30';
+      case 'LEGAL_COUNSEL': return 'bg-amber-500/20 text-amber-300 border-amber-500/30';
+      case 'OPERATIONS_MANAGER': return 'bg-cyan-500/20 text-cyan-300 border-cyan-500/30';
       default: return 'bg-slate-500/20 text-slate-300 border-slate-500/30';
     }
   };
@@ -44,7 +45,7 @@ export const Navbar = () => {
         </div>
         <div>
           <span style={{ fontSize: '1.25rem', fontWeight: 700, letterSpacing: '-0.02em', background: 'linear-gradient(90deg, #ffffff 0%, #06b6d4 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-            MetroMind
+            AI Scategorizer
           </span>
           <span style={{ fontSize: '0.7rem', color: '#64748b', marginLeft: '8px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
             AI Control Center

@@ -1,0 +1,21 @@
+{
+  "model": "distilbert-base-uncased",
+  "labels": [
+    "FINANCE",
+    "HR",
+    "LEGAL",
+    "OPERATIONS"
+  ],
+  "seed": 2,
+  "epochs": 5,
+  "learning_rate": 3e-05,
+  "batch_size": 16,
+  "max_length": 256,
+  "best_checkpoint": "results/distilbert_s2/checkpoints/checkpoint-212",
+  "val_macro_f1": 0.9944,
+  "train_minutes": 1.04,
+  "inference_ms_per_doc": 1.891,
+  "device": "cuda",
+  "parameters_millions": 67.0,
+  "train_size": 839
+}
