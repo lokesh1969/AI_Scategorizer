@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
   ArrowRight,
@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { Sorter } from '../components/Sorter';
+import { Scanner } from '../components/Scanner';
 import { DestTag } from '../components/Tags';
 import { BrandMark } from '../components/BrandMark';
 import '../styles/landing.css';
@@ -118,6 +119,10 @@ const ScoreBars = ({ rows, threshold = 70, highlight }) => (
 
 export const Landing = () => {
   const { user } = useAuth();
+  const sorterRef = useRef(null);
+  // With the scanner feeding the belt on desktop, sample parcels come less often
+  const [spawnMs] = useState(() => (window.matchMedia('(min-width: 1101px)').matches ? 2600 : 1500));
+  const handOff = useCallback((parcel, rect) => sorterRef.current?.handOff(parcel, rect), []);
   const demoLink = user ? '/dashboard' : '/login';
   const demoText = user ? 'Open your dashboard' : 'Open the live demo';
 
@@ -161,7 +166,8 @@ export const Landing = () => {
             </div>
           </div>
           <div className="lp-hero-floor">
-            <Sorter />
+            <Scanner onHandOff={handOff} />
+            <Sorter ref={sorterRef} spawnMs={spawnMs} />
           </div>
         </section>
 

@@ -139,6 +139,18 @@
 .parcel-still {
   animation: none !important;
 }
+/* A tag handed on by the scanner: a size up so the eye can follow it */
+.parcel-featured {
+  z-index: 3;
+  scale: 1.12;
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.4);
+}
+.parcel-flying {
+  position: fixed;
+  z-index: 60;
+  scale: none;
+  pointer-events: none;
+}
 .parcel-fin .parcel-code { background: var(--fin); }
 .parcel-hr .parcel-code { background: var(--hr); }
 .parcel-leg .parcel-code { background: var(--leg); }
@@ -173,6 +185,17 @@
   border-radius: 4px;
   background: var(--c-wash);
   border: 1px solid color-mix(in srgb, var(--c) 28%, transparent);
+}
+.chute {
+  transition: transform 0.35s var(--ease-out), box-shadow 0.35s var(--ease-out);
+}
+.chute.is-hit {
+  transform: translateY(-3px);
+  box-shadow: 0 0 0 2px var(--c), var(--shadow-2);
+}
+.chute-pile li.is-featured .pile-file {
+  font-weight: 700;
+  color: var(--ink);
 }
 .chute-fin { --c: var(--fin); --c-wash: var(--fin-wash); }
 .chute-hr { --c: var(--hr); --c-wash: var(--hr-wash); }
@@ -257,6 +280,336 @@
   margin-top: 12px;
   font-size: 0.85rem;
   color: var(--ink-3);
+}
+
+/* Scanner station (desktop hero) ------------------------------------ */
+.lp-hero-floor {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.lp-hero .chute {
+  min-height: clamp(150px, 22vh, 280px);
+}
+.scan {
+  display: grid;
+  grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+  gap: 22px;
+  margin: 0;
+  padding: 18px;
+  background: var(--stock);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  box-shadow: var(--shadow-2);
+}
+.hit-fin { --c: var(--fin); --w: var(--fin-wash); }
+.hit-hr { --c: var(--hr); --w: var(--hr-wash); }
+.hit-leg { --c: var(--leg); --w: var(--leg-wash); }
+.hit-ops { --c: var(--ops); --w: var(--ops-wash); }
+
+.scan-bed {
+  position: relative;
+  min-height: clamp(270px, 32vh, 360px);
+  padding: 30px 22px 18px;
+  background: var(--ground-deep);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.scan-head {
+  position: absolute;
+  inset: 0 0 auto;
+  z-index: 3;
+  height: 18px;
+  display: grid;
+  place-items: center;
+  background: var(--belt);
+  box-shadow: 0 3px 6px rgba(20, 23, 28, 0.25);
+}
+.scan-head-slot {
+  width: 78%;
+  height: 4px;
+  border-radius: 2px;
+  background: #000;
+}
+
+.scan-doc {
+  position: relative;
+  padding: 16px 20px 20px;
+  background: var(--stock);
+  border-radius: 3px;
+  box-shadow: var(--shadow-2);
+  overflow: hidden;
+}
+.is-feed .scan-doc {
+  animation: scan-feed var(--feed-ms) var(--ease-out) both;
+}
+.is-exit .scan-doc {
+  animation: scan-out 480ms cubic-bezier(0.55, 0, 0.9, 0.4) forwards;
+}
+@keyframes scan-feed {
+  from { transform: translateY(-104%); }
+}
+@keyframes scan-out {
+  to { transform: translateX(60%); opacity: 0; }
+}
+.scan-doc-file {
+  display: block;
+  padding-bottom: 8px;
+  margin-bottom: 12px;
+  border-bottom: 1px solid var(--line);
+  font-size: 0.78rem;
+  font-weight: 650;
+  color: var(--ink-3);
+}
+.scan-doc p {
+  opacity: 0.4;
+}
+.is-scan .scan-doc p {
+  animation: scan-line-read 280ms var(--ease-out) calc(var(--scan-ms) * var(--at)) forwards;
+}
+.is-score .scan-doc p,
+.is-read .scan-doc p,
+.is-exit .scan-doc p {
+  opacity: 1;
+}
+@keyframes scan-line-read {
+  to { opacity: 1; }
+}
+.scan-doc-title {
+  margin-bottom: 8px;
+  font-stretch: var(--condensed);
+  font-weight: 800;
+  font-size: clamp(1.3rem, 1.5vw, 1.7rem);
+  line-height: 1.1;
+  color: var(--ink);
+}
+.scan-doc-line {
+  font-size: clamp(0.82rem, 0.85vw, 0.98rem);
+  line-height: 1.6;
+  color: var(--ink-2);
+}
+
+/* A deciding word: its department's wash sweeps in under it as the beam passes */
+.scan-hit {
+  padding: 0 2px;
+  border-radius: 2px;
+  color: inherit;
+  font-weight: 700;
+  background: linear-gradient(var(--w), var(--w)) no-repeat 0 0 / 0% 100%;
+  box-shadow: inset 0 -2px 0 transparent;
+}
+.is-scan .scan-hit {
+  animation: scan-hit 460ms var(--ease-out) calc(var(--scan-ms) * var(--at) + 80ms) forwards;
+}
+.is-score .scan-hit,
+.is-read .scan-hit,
+.is-exit .scan-hit {
+  background-size: 100% 100%;
+  box-shadow: inset 0 -2px 0 var(--c);
+  color: var(--c);
+}
+@keyframes scan-hit {
+  to {
+    background-size: 100% 100%;
+    box-shadow: inset 0 -2px 0 var(--c);
+    color: var(--c);
+  }
+}
+
+/* The scan bar: a graphite light bar with a soft shade trailing above it */
+.scan-beam {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 2px;
+  background: var(--belt);
+  opacity: 0;
+  pointer-events: none;
+}
+.scan-beam::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 2px;
+  height: 56px;
+  background: linear-gradient(180deg, rgba(20, 23, 28, 0), rgba(20, 23, 28, 0.07));
+}
+.is-scan .scan-beam {
+  animation: scan-beam var(--scan-ms) cubic-bezier(0.45, 0, 0.55, 1) forwards;
+}
+@keyframes scan-beam {
+  0% { top: 0; opacity: 1; }
+  96% { opacity: 1; }
+  100% { top: 100%; opacity: 0; }
+}
+
+.scan-readout {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding-top: 4px;
+}
+.scan-facts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+.scan-facts dt,
+.scan-words-label {
+  font-size: 0.8rem;
+  font-weight: 650;
+  color: var(--ink-3);
+}
+.scan-facts dd {
+  margin-top: 2px;
+  font-stretch: var(--condensed);
+  font-weight: 800;
+  font-size: clamp(1.15rem, 1.3vw, 1.45rem);
+  color: var(--ink);
+}
+.scan-words ul {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  gap: 6px;
+  margin-top: 8px;
+  min-height: 64px;
+}
+.scan-words li {
+  padding: 4px 8px;
+  border-radius: 4px;
+  border: 1px solid color-mix(in srgb, var(--c) 30%, transparent);
+  background: var(--w);
+  color: var(--c);
+  font-weight: 700;
+  font-size: 0.85rem;
+  opacity: 0;
+  transform: translateY(6px);
+}
+.is-scan .scan-words li {
+  animation: scan-chip 360ms var(--ease-out) calc(var(--scan-ms) * var(--at) + 200ms) forwards;
+}
+.is-score .scan-words li,
+.is-read .scan-words li,
+.is-exit .scan-words li {
+  opacity: 1;
+  transform: none;
+}
+@keyframes scan-chip {
+  to { opacity: 1; transform: none; }
+}
+
+/* Scores race against the threshold line */
+.scan-scores {
+  --code-w: 30px;
+  --val-w: 52px;
+  position: relative;
+  display: grid;
+  gap: 7px;
+  padding-top: 20px;
+}
+.scan-threshold {
+  position: absolute;
+  top: 2px;
+  bottom: -4px;
+  left: calc(var(--code-w) + 8px + (100% - var(--code-w) - var(--val-w) - 16px) * var(--t));
+  border-left: 1.5px dashed var(--ink-2);
+}
+.scan-threshold span {
+  position: absolute;
+  top: -2px;
+  left: 5px;
+  font-size: 0.75rem;
+  font-weight: 750;
+  color: var(--ink-2);
+  font-variant-numeric: tabular-nums;
+}
+.scan-score {
+  display: grid;
+  grid-template-columns: var(--code-w) minmax(0, 1fr) var(--val-w);
+  align-items: center;
+  gap: 8px;
+}
+.scan-score-code {
+  font-stretch: var(--condensed);
+  font-weight: 850;
+  font-size: 0.95rem;
+  color: var(--ink-3);
+}
+.scan-score-track {
+  height: 8px;
+  border-radius: 4px;
+  background: var(--ground-deep);
+  overflow: hidden;
+}
+.scan-score-fill {
+  display: block;
+  height: 100%;
+  border-radius: 4px;
+  background: var(--line-strong);
+}
+.scan-score-val {
+  text-align: right;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--ink-2);
+}
+.scan-score.is-top .scan-score-code,
+.scan-score.is-top .scan-score-val {
+  color: var(--c);
+}
+.scan-score.is-top .scan-score-fill {
+  background: var(--c);
+}
+
+/* The tag prints out of a slot once the scores settle */
+.scan-print {
+  position: relative;
+  margin-top: auto;
+}
+.scan-print-slot {
+  position: relative;
+  z-index: 2;
+  display: block;
+  height: 6px;
+  border-radius: 3px;
+  background: var(--belt);
+}
+.scan-print-tag {
+  padding: 0 6px;
+  clip-path: inset(0 0 100% 0);
+  transform: translateY(-48px);
+}
+.is-read .scan-print-tag {
+  animation: scan-print 760ms var(--ease-out) forwards;
+}
+.is-exit .scan-print-tag {
+  /* the belt has taken the tag: a flying copy carries it on */
+  opacity: 0;
+}
+@keyframes scan-print {
+  to {
+    clip-path: inset(0 0 -24px 0);
+    transform: none;
+  }
+}
+.scan-print .dtag-lg .dtag-code {
+  min-width: 78px;
+  padding: 14px 10px 10px;
+  font-size: 2.1rem;
+}
+.scan-print .dtag-lg .dtag-code span {
+  margin-top: 10px;
+}
+.scan-print .dtag-lg .dtag-meta {
+  min-width: 0;
+  padding: 10px 16px;
+}
+.scan-print .dtag-lg .dtag-conf {
+  font-size: 1.45rem;
 }
 
 /* Sections ---------------------------------------------------------- */
@@ -587,6 +940,10 @@
   .lp-hero {
     grid-template-columns: minmax(0, 1fr);
     min-height: 0;
+  }
+  /* The scanner station is a desktop-only hero piece */
+  .scan {
+    display: none;
   }
   .route {
     grid-template-columns: repeat(3, minmax(0, 1fr));
