@@ -1,110 +1,80 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { ArrowRight, CheckCircle2 } from 'lucide-react';
 import api from '../services/api';
-import { CheckCircle2, AlertTriangle, Eye, ArrowRight, Shield } from 'lucide-react';
+import { DEPARTMENTS } from '../constants';
+import { DestTag, PriorityChip } from '../components/Tags';
 
 export const VerificationQueue = () => {
   const [documents, setDocuments] = useState([]);
+  const [threshold, setThreshold] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
   useEffect(() => {
-    fetchQueue();
+    api
+      .get('/verification')
+      .then((res) => setDocuments(res.data))
+      .catch(() => setError('The queue could not be loaded. Check that the backend is running, then refresh.'))
+      .finally(() => setLoading(false));
+    api
+      .get('/settings')
+      .then((res) => setThreshold(res.data.confidence_threshold))
+      .catch(() => {});
   }, []);
 
-  const fetchQueue = async () => {
-    try {
-      const res = await api.get('/verification');
-      setDocuments(res.data);
-    } catch (err) {
-      console.error('Failed to fetch verification queue', err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-      <div>
-        <h1 style={{ fontSize: '1.5rem', fontWeight: 700, color: '#f8fafc', display: 'flex', alignItems: 'center', gap: '10px' }}>
-          <AlertTriangle color="#f59e0b" size={26} />
-          Human Verification Queue
-        </h1>
-        <p style={{ fontSize: '0.85rem', color: '#94a3b8', marginTop: '4px' }}>
-          Documents routed here because AI classification confidence is below the configured system threshold (70.0%).
-        </p>
+    <div className="page">
+      <div className="page-head">
+        <div>
+          <h1 className="page-title">Manual check</h1>
+          <p className="page-lede">
+            Documents the model was not sure about{threshold !== null ? ` (below ${threshold}% confidence)` : ''}, plus
+            empty or unreadable ones. Open one, decide where it belongs, and it is routed straight away.
+          </p>
+        </div>
       </div>
 
-      <div className="glass-panel" style={{ padding: '0', overflow: 'hidden' }}>
+      {error && <div className="notice notice-error" role="alert">{error}</div>}
+
+      <div className="panel">
         {loading ? (
-          <div style={{ padding: '40px', textAlignment: 'center', color: '#94a3b8' }}>
-            Fetching pending verification queue...
-          </div>
+          <div className="loading">Loading the queue…</div>
         ) : documents.length === 0 ? (
-          <div style={{ padding: '48px 24px', textAlign: 'center' }}>
-            <CheckCircle2 size={48} color="#10b981" style={{ marginBottom: '12px' }} />
-            <h3 style={{ fontSize: '1.1rem', fontWeight: 600, color: '#f8fafc' }}>
-              Verification Queue Empty
-            </h3>
-            <p style={{ fontSize: '0.85rem', color: '#64748b', marginTop: '4px' }}>
-              All documents have met confidence thresholds or have been manually verified.
-            </p>
+          <div className="empty">
+            <CheckCircle2 size={40} aria-hidden="true" style={{ color: 'var(--ok)', margin: '0 auto' }} />
+            <h3>Nothing waiting</h3>
+            <p>Every document has been routed or checked.</p>
           </div>
         ) : (
-          <div style={{ overflowX: 'auto' }}>
-            <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.875rem' }}>
+          <div className="table-wrap">
+            <table className="table">
               <thead>
-                <tr style={{ background: 'rgba(15, 23, 42, 0.9)', borderBottom: '1px solid rgba(255, 255, 255, 0.08)', color: '#64748b', fontSize: '0.75rem', textTransform: 'uppercase' }}>
-                  <th style={{ padding: '14px 20px' }}>Document</th>
-                  <th style={{ padding: '14px 20px' }}>AI Predicted Category</th>
-                  <th style={{ padding: '14px 20px' }}>Confidence Score</th>
-                  <th style={{ padding: '14px 20px' }}>Priority</th>
-                  <th style={{ padding: '14px 20px' }}>Language</th>
-                  <th style={{ padding: '14px 20px' }}>Action</th>
+                <tr>
+                  <th scope="col">Tag</th>
+                  <th scope="col">Document</th>
+                  <th scope="col">Model&rsquo;s guess</th>
+                  <th scope="col">Priority</th>
+                  <th scope="col">Language</th>
+                  <th scope="col"><span className="visually-hidden">Action</span></th>
                 </tr>
               </thead>
               <tbody>
                 {documents.map((doc) => (
-                  <tr key={doc._id} style={{ borderBottom: '1px solid rgba(255, 255, 255, 0.04)' }}>
-                    <td style={{ padding: '14px 20px', fontWeight: 500, color: '#f8fafc' }}>
-                      {doc.original_filename}
-                      <div style={{ fontSize: '0.75rem', color: '#64748b', marginTop: '2px' }}>
-                        Uploaded by {doc.uploader_name}
-                      </div>
+                  <tr key={doc._id}>
+                    <td>
+                      <DestTag category={doc.classification?.predicted_category} confidence={doc.classification?.confidence} status={doc.verification_status} />
                     </td>
-                    <td style={{ padding: '14px 20px' }}>
-                      <span className={`badge cat-${doc.classification?.predicted_category?.toLowerCase()}`}>
-                        {doc.classification?.predicted_category}
-                      </span>
+                    <td>
+                      <Link to={`/documents/${doc._id}`} className="row-link cell-strong">{doc.original_filename}</Link>
+                      <div className="cell-sub">Uploaded by {doc.uploader_name}</div>
                     </td>
-                    <td style={{ padding: '14px 20px', fontWeight: 700, color: '#fbbf24' }}>
-                      ⚠ {doc.classification?.confidence}%
-                    </td>
-                    <td style={{ padding: '14px 20px' }}>
-                      <span className={`badge badge-${doc.priority?.level?.toLowerCase()}`}>
-                        {doc.priority?.level}
-                      </span>
-                    </td>
-                    <td style={{ padding: '14px 20px', color: '#cbd5e1', fontSize: '0.8rem' }}>
-                      {doc.language}
-                    </td>
-                    <td style={{ padding: '14px 20px' }}>
-                      <Link 
-                        to={`/documents/${doc._id}`} 
-                        style={{
-                          padding: '6px 14px',
-                          background: 'linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%)',
-                          borderRadius: '6px',
-                          color: '#ffffff',
-                          fontSize: '0.8rem',
-                          fontWeight: 600,
-                          textDecoration: 'none',
-                          display: 'inline-flex',
-                          alignItems: 'center',
-                          gap: '6px'
-                        }}
-                      >
-                        Review & Verify
-                        <ArrowRight size={14} />
+                    <td className="muted">{DEPARTMENTS[doc.classification?.predicted_category] || 'No guess (unreadable)'}</td>
+                    <td><PriorityChip level={doc.priority?.level} /></td>
+                    <td className="muted">{doc.language}</td>
+                    <td style={{ textAlign: 'right' }}>
+                      <Link to={`/documents/${doc._id}`} className="btn btn-check btn-sm">
+                        Check it <ArrowRight size={16} aria-hidden="true" />
                       </Link>
                     </td>
                   </tr>

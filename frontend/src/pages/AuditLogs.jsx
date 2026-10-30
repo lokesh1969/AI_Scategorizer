@@ -1,72 +1,98 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import api from '../services/api';
-import { History, Shield, Clock } from 'lucide-react';
+
+const ACTION_NAMES = {
+  LOGIN: 'Signed in',
+  UPLOAD: 'Uploaded',
+  DOCUMENT_VIEWED: 'Opened document',
+  DOCUMENT_DELETED: 'Deleted document',
+  HUMAN_VERIFIED: 'Checked document',
+  USER_CREATED: 'Added user',
+  USER_UPDATED: 'Updated user',
+  ROLE_CHANGED: 'Changed role',
+  SETTINGS_CHANGED: 'Changed settings',
+};
+
+// Turn the stored details object into a short readable line
+const describe = (log) => {
+  const d = log.details || {};
+  switch (log.action) {
+    case 'UPLOAD':
+      return `${d.filename}: ${d.category} at ${d.confidence}%, ${d.status === 'AI VERIFIED' ? 'routed by AI' : 'held for manual check'}`;
+    case 'HUMAN_VERIFIED':
+      return d.model_prediction && d.model_prediction !== d.verified_category
+        ? `Re-routed from ${d.model_prediction} to ${d.verified_category}`
+        : `Confirmed ${d.verified_category}`;
+    case 'DOCUMENT_VIEWED':
+    case 'DOCUMENT_DELETED':
+      return d.filename;
+    case 'SETTINGS_CHANGED':
+      return `Confidence threshold set to ${d.confidence_threshold}%`;
+    case 'USER_CREATED':
+      return `${d.created_user_email} as ${d.role}`;
+    case 'ROLE_CHANGED':
+    case 'USER_UPDATED':
+      return `${d.updated_user}: ${Object.entries(d.updates || {}).map(([k, v]) => `${k} → ${v}`).join(', ')}`;
+    case 'LOGIN':
+      return d.ip ? `From ${d.ip}` : '';
+    default:
+      return Object.keys(d).length ? JSON.stringify(d) : '';
+  }
+};
 
 export const AuditLogs = () => {
   const [logs, setLogs] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
   useEffect(() => {
-    fetchLogs();
+    api
+      .get('/audit-logs')
+      .then((res) => setLogs(res.data))
+      .catch(() => setError('The audit log could not be loaded.'))
+      .finally(() => setLoading(false));
   }, []);
 
-  const fetchLogs = async () => {
-    try {
-      const res = await api.get('/audit-logs');
-      setLogs(res.data);
-    } catch (err) {
-      console.error('Failed to fetch audit logs', err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-      <div>
-        <h1 style={{ fontSize: '1.5rem', fontWeight: 700, color: '#f8fafc', display: 'flex', alignItems: 'center', gap: '10px' }}>
-          <History size={24} color="#06b6d4" />
-          Security & Operational Audit Logs
-        </h1>
-        <p style={{ fontSize: '0.85rem', color: '#94a3b8', marginTop: '4px' }}>
-          Immutable log trail recording document uploads, verifications, system access, and setting modifications.
-        </p>
+    <div className="page">
+      <div className="page-head">
+        <div>
+          <h1 className="page-title">Audit log</h1>
+          <p className="page-lede">The latest 200 recorded actions: sign-ins, uploads, document views, checks, and changes to users and settings.</p>
+        </div>
       </div>
 
-      <div className="glass-panel" style={{ padding: '0', overflow: 'hidden' }}>
+      {error && <div className="notice notice-error" role="alert">{error}</div>}
+
+      <div className="panel">
         {loading ? (
-          <div style={{ padding: '40px', color: '#94a3b8' }}>Loading audit logs...</div>
+          <div className="loading">Loading the audit log…</div>
+        ) : logs.length === 0 ? (
+          <div className="empty"><h3>No entries yet</h3></div>
         ) : (
-          <div style={{ overflowX: 'auto' }}>
-            <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.85rem' }}>
+          <div className="table-wrap">
+            <table className="table">
               <thead>
-                <tr style={{ background: 'rgba(15, 23, 42, 0.9)', borderBottom: '1px solid rgba(255, 255, 255, 0.08)', color: '#64748b', fontSize: '0.75rem', textTransform: 'uppercase' }}>
-                  <th style={{ padding: '14px 20px' }}>Timestamp</th>
-                  <th style={{ padding: '14px 20px' }}>User Email</th>
-                  <th style={{ padding: '14px 20px' }}>Action Triggered</th>
-                  <th style={{ padding: '14px 20px' }}>Document / Target ID</th>
-                  <th style={{ padding: '14px 20px' }}>Audit Details</th>
+                <tr>
+                  <th scope="col">When</th>
+                  <th scope="col">Who</th>
+                  <th scope="col">Action</th>
+                  <th scope="col">Details</th>
                 </tr>
               </thead>
               <tbody>
                 {logs.map((log) => (
-                  <tr key={log._id} style={{ borderBottom: '1px solid rgba(255, 255, 255, 0.04)' }}>
-                    <td style={{ padding: '14px 20px', color: '#94a3b8', whiteSpace: 'nowrap' }}>
-                      {new Date(log.timestamp).toLocaleString()}
-                    </td>
-                    <td style={{ padding: '14px 20px', fontWeight: 600, color: '#f8fafc' }}>
-                      {log.user_email}
-                    </td>
-                    <td style={{ padding: '14px 20px' }}>
-                      <span className="badge badge-verified" style={{ fontSize: '0.7rem' }}>
-                        {log.action}
-                      </span>
-                    </td>
-                    <td style={{ padding: '14px 20px', color: '#06b6d4', fontFamily: 'JetBrains Mono, monospace', fontSize: '0.8rem' }}>
-                      {log.document_id || 'N/A'}
-                    </td>
-                    <td style={{ padding: '14px 20px', color: '#cbd5e1', fontSize: '0.8rem' }}>
-                      {log.details ? JSON.stringify(log.details) : '-'}
+                  <tr key={log._id}>
+                    <td className="num cell-sub" style={{ whiteSpace: 'nowrap' }}>{new Date(log.timestamp).toLocaleString()}</td>
+                    <td className="cell-strong">{log.user_email}</td>
+                    <td><span className="audit-action">{ACTION_NAMES[log.action] || log.action}</span></td>
+                    <td className="audit-details">
+                      {log.document_id && log.action !== 'DOCUMENT_DELETED' ? (
+                        <Link to={`/documents/${log.document_id}`} className="row-link">{describe(log) || 'Open document'}</Link>
+                      ) : (
+                        describe(log) || '—'
+                      )}
                     </td>
                   </tr>
                 ))}

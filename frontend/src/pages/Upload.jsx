@@ -1,211 +1,153 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { FileUp, FileText, CheckCircle2, AlertCircle, X } from 'lucide-react';
 import api from '../services/api';
-import { Upload as UploadIcon, FileText, CheckCircle2, AlertCircle, Sparkles, Cpu } from 'lucide-react';
+
+// What the server does with each upload, in order. The server runs them in one
+// request, so the checklist advances on a timer and completes when it answers.
+const STEPS = [
+  'Receiving the file',
+  'Checking type and size',
+  'Reading the text (OCR for scans)',
+  'Detecting the language',
+  'Scoring it against each department',
+  'Setting priority, summary and key details',
+  'Checking confidence and routing',
+];
+
+const MAX_MB = 25;
 
 export const Upload = () => {
   const [file, setFile] = useState(null);
   const [dragOver, setDragOver] = useState(false);
   const [uploading, setUploading] = useState(false);
-  const [progressStep, setProgressStep] = useState(0);
+  const [step, setStep] = useState(0);
   const [error, setError] = useState('');
+  const inputRef = useRef(null);
   const navigate = useNavigate();
 
-  const pipelineSteps = [
-    'Uploading document file...',
-    'Detecting file format & ingesting payload...',
-    'Extracting document content (PDF/DOCX/XLSX/TXT)...',
-    'Applying OpenCV image preprocessing & CLAHE contrast...',
-    'Executing bilingual Tesseract OCR (eng + hin)...',
-    'Detecting bilingual language (English / Hindi / Mixed)...',
-    'Executing TF-IDF + ML Document Classification...',
-    'Calculating Urgency & Priority Score (0-100)...',
-    'Generating extractive AI summary & extracting entities...',
-    'Determining department routing & completing persistence...'
-  ];
-
-  const handleFileChange = (e) => {
-    if (e.target.files && e.target.files[0]) {
-      setFile(e.target.files[0]);
-      setError('');
+  const choose = (f) => {
+    if (!f) return;
+    if (f.size > MAX_MB * 1024 * 1024) {
+      setError(`"${f.name}" is ${(f.size / 1048576).toFixed(1)} MB. The limit is ${MAX_MB} MB.`);
+      return;
     }
-  };
-
-  const handleDragOver = (e) => {
-    e.preventDefault();
-    setDragOver(true);
-  };
-
-  const handleDragLeave = () => {
-    setDragOver(false);
-  };
-
-  const handleDrop = (e) => {
-    e.preventDefault();
-    setDragOver(false);
-    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-      setFile(e.dataTransfer.files[0]);
-      setError('');
-    }
+    setFile(f);
+    setError('');
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!file) return;
-
     setUploading(true);
     setError('');
-    setProgressStep(0);
-
-    // Simulate animated step transitions for processing feedback
-    const interval = setInterval(() => {
-      setProgressStep((prev) => {
-        if (prev < pipelineSteps.length - 2) return prev + 1;
-        return prev;
-      });
-    }, 450);
+    setStep(0);
+    const timer = setInterval(() => setStep((s) => Math.min(s + 1, STEPS.length - 2)), 500);
 
     const formData = new FormData();
     formData.append('file', file);
-
     try {
-      const res = await api.post('/documents/upload', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' }
-      });
-      clearInterval(interval);
-      setProgressStep(pipelineSteps.length - 1);
-
-      setTimeout(() => {
-        navigate(`/documents/${res.data._id}`);
-      }, 800);
+      const res = await api.post('/documents/upload', formData, { headers: { 'Content-Type': 'multipart/form-data' } });
+      clearInterval(timer);
+      setStep(STEPS.length);
+      setTimeout(() => navigate(`/documents/${res.data._id}`), 700);
     } catch (err) {
-      clearInterval(interval);
-      setError(err.response?.data?.detail || 'Document processing failed. Please check file format and try again.');
+      clearInterval(timer);
+      setError(err.response?.data?.detail || 'The document could not be processed. Check the file type and try again.');
       setUploading(false);
     }
   };
 
   return (
-    <div style={{ maxWidth: '720px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '24px' }}>
-      <div>
-        <h1 style={{ fontSize: '1.5rem', fontWeight: 700, color: '#f8fafc' }}>
-          Document Upload & Processing Pipeline
-        </h1>
-        <p style={{ fontSize: '0.85rem', color: '#94a3b8', marginTop: '4px' }}>
-          Upload PDF, DOCX, XLSX, TXT, PNG, or JPG files. Supports bilingual English & Hindi scanned documents.
-        </p>
+    <div className="page page-narrow">
+      <div className="page-head">
+        <div>
+          <h1 className="page-title">Upload a document</h1>
+          <p className="page-lede">
+            PDF, Word (.docx), Excel (.xlsx), text, or a PNG/JPG photo or scan, up to {MAX_MB} MB. English and Hindi are both read.
+          </p>
+        </div>
       </div>
 
-      <div className="glass-panel" style={{ padding: '32px' }}>
+      <div className="panel panel-body" style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
         {error && (
-          <div style={{ background: 'rgba(244, 63, 94, 0.15)', border: '1px solid rgba(244, 63, 94, 0.3)', borderRadius: '8px', padding: '12px', color: '#fda4af', fontSize: '0.85rem', marginBottom: '20px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <AlertCircle size={18} />
+          <div className="notice notice-error" role="alert">
+            <AlertCircle size={18} aria-hidden="true" />
             <span>{error}</span>
           </div>
         )}
 
         {!uploading ? (
-          <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-            <div
-              onDragOver={handleDragOver}
-              onDragLeave={handleDragLeave}
-              onDrop={handleDrop}
-              style={{
-                border: dragOver ? '2px dashed #06b6d4' : '2px dashed rgba(255, 255, 255, 0.15)',
-                borderRadius: '12px',
-                padding: '48px 24px',
-                textAlign: 'center',
-                background: dragOver ? 'rgba(6, 182, 212, 0.08)' : 'rgba(15, 23, 42, 0.5)',
-                cursor: 'pointer',
-                transition: 'all 0.2s'
+          <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+            <label
+              htmlFor="file-upload-input"
+              className={`dropzone${dragOver ? ' is-over' : ''}`}
+              onDragOver={(e) => {
+                e.preventDefault();
+                setDragOver(true);
+              }}
+              onDragLeave={() => setDragOver(false)}
+              onDrop={(e) => {
+                e.preventDefault();
+                setDragOver(false);
+                choose(e.dataTransfer.files?.[0]);
               }}
             >
               <input
-                type="file"
+                ref={inputRef}
                 id="file-upload-input"
-                onChange={handleFileChange}
+                type="file"
+                className="visually-hidden"
                 accept=".pdf,.docx,.xlsx,.txt,.png,.jpg,.jpeg"
-                style={{ display: 'none' }}
+                onChange={(e) => choose(e.target.files?.[0])}
               />
-              <label htmlFor="file-upload-input" style={{ cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px' }}>
-                <div style={{ width: '56px', height: '56px', borderRadius: '50%', background: 'rgba(6, 182, 212, 0.12)', border: '1px solid rgba(6, 182, 212, 0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <UploadIcon size={28} color="#06b6d4" />
-                </div>
-                <div>
-                  <div style={{ fontSize: '1rem', fontWeight: 600, color: '#f8fafc' }}>
-                    {file ? file.name : 'Drop your document here, or Browse Files'}
-                  </div>
-                  <div style={{ fontSize: '0.8rem', color: '#64748b', marginTop: '4px' }}>
-                    Supported: PDF, DOCX, XLSX, TXT, PNG, JPG (Max 25MB)
-                  </div>
-                </div>
-              </label>
-            </div>
+              <span className="dropzone-icon" aria-hidden="true"><FileUp size={26} /></span>
+              <span className="dropzone-title">Drop a file here, or choose one</span>
+              <span className="hint">It is read, tagged and routed as soon as you start.</span>
+            </label>
 
             {file && (
-              <div style={{ background: 'rgba(6, 182, 212, 0.1)', padding: '12px 16px', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: '0.85rem' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#67e8f9' }}>
-                  <FileText size={18} />
-                  <span>{file.name} ({(file.size / (1024*1024)).toFixed(2)} MB)</span>
-                </div>
-                <button type="button" onClick={() => setFile(null)} style={{ background: 'none', border: 'none', color: '#94a3b8', cursor: 'pointer' }}>
-                  Remove
+              <div className="file-chip">
+                <span><FileText size={18} aria-hidden="true" />{file.name} <span className="hint num">({(file.size / 1048576).toFixed(2)} MB)</span></span>
+                <button
+                  type="button"
+                  className="icon-btn"
+                  aria-label="Remove file"
+                  onClick={() => {
+                    setFile(null);
+                    if (inputRef.current) inputRef.current.value = '';
+                  }}
+                >
+                  <X size={18} />
                 </button>
               </div>
             )}
 
-            <button
-              type="submit"
-              disabled={!file}
-              style={{
-                padding: '12px',
-                background: file ? 'linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%)' : 'rgba(255, 255, 255, 0.05)',
-                border: 'none',
-                borderRadius: '8px',
-                color: file ? '#ffffff' : '#64748b',
-                fontWeight: 600,
-                fontSize: '0.9rem',
-                cursor: file ? 'pointer' : 'not-allowed',
-                boxShadow: file ? '0 4px 15px rgba(6, 182, 212, 0.3)' : 'none',
-                transition: 'all 0.2s'
-              }}
-            >
-              Start Intelligent Processing Pipeline
+            <button type="submit" className="btn btn-primary btn-lg" disabled={!file}>
+              Read, tag and route it
             </button>
           </form>
         ) : (
-          /* Processing Steps Progress Animation */
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', padding: '12px 0' }}>
-            <div style={{ textAlign: 'center' }}>
-              <div style={{ display: 'inline-flex', padding: '12px', borderRadius: '50%', background: 'rgba(6, 182, 212, 0.15)', marginBottom: '12px' }}>
-                <Cpu size={32} color="#06b6d4" className="animate-spin" />
-              </div>
-              <h2 style={{ fontSize: '1.2rem', fontWeight: 700, color: '#f8fafc' }}>
-                AI Scategorizer Pipeline Execution
-              </h2>
-              <p style={{ fontSize: '0.85rem', color: '#94a3b8', marginTop: '4px' }}>
-                Processing document: {file?.name}
-              </p>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }} aria-live="polite">
+            <div>
+              <h2 className="section-title">Processing {file?.name}</h2>
+              <p className="hint">Scans take longer because every page is cleaned up and read with OCR.</p>
             </div>
-
-            {/* Progress Bar */}
-            <div style={{ width: '100%', height: '8px', background: 'rgba(255, 255, 255, 0.08)', borderRadius: '4px', overflow: 'hidden' }}>
-              <div style={{ width: `${((progressStep + 1) / pipelineSteps.length) * 100}%`, height: '100%', background: 'linear-gradient(90deg, #06b6d4 0%, #8b5cf6 100%)', transition: 'width 0.3s ease' }}></div>
+            <div className="progress" aria-hidden="true">
+              <span style={{ width: `${(Math.min(step + 1, STEPS.length) / STEPS.length) * 100}%` }} />
             </div>
-
-            {/* Pipeline Stage Checklist */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginTop: '12px' }}>
-              {pipelineSteps.map((step, idx) => {
-                const isDone = idx < progressStep;
-                const isCurrent = idx === progressStep;
+            <ol className="pipeline">
+              {STEPS.map((label, i) => {
+                const done = i < step;
+                const current = i === step;
                 return (
-                  <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '0.85rem', color: isDone ? '#34d399' : isCurrent ? '#06b6d4' : '#475569', fontWeight: isCurrent ? 600 : 400 }}>
-                    {isDone ? <CheckCircle2 size={16} color="#10b981" /> : isCurrent ? <Sparkles size={16} color="#06b6d4" /> : <div style={{ width: '16px' }} />}
-                    <span>{step}</span>
-                  </div>
+                  <li key={label} className={done ? 'is-done' : current ? 'is-current' : ''}>
+                    {done ? <CheckCircle2 size={18} aria-hidden="true" /> : <span className="pipeline-dot" aria-hidden="true" />}
+                    <span>{label}</span>
+                  </li>
                 );
               })}
-            </div>
+            </ol>
           </div>
         )}
       </div>

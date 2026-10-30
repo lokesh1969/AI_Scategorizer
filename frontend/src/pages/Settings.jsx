@@ -1,128 +1,118 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import api from '../services/api';
-import { Settings as SettingsIcon, Sliders, ShieldCheck } from 'lucide-react';
+import { DEPARTMENTS } from '../constants';
+import { DestTag } from '../components/Tags';
 
 export const Settings = () => {
-  const [confidenceThreshold, setConfidenceThreshold] = useState(70.0);
-  const [categories, setCategories] = useState(['FINANCE', 'HR', 'LEGAL', 'OPERATIONS']);
-  const [modelName, setModelName] = useState('');
+  const [threshold, setThreshold] = useState(70);
+  const [saved, setSaved] = useState(70);
+  const [categories, setCategories] = useState([]);
+  const [model, setModel] = useState({ loaded: true, name: '' });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState(null);
 
   useEffect(() => {
-    fetchSettings();
+    api
+      .get('/settings')
+      .then((res) => {
+        setThreshold(res.data.confidence_threshold);
+        setSaved(res.data.confidence_threshold);
+        setCategories(res.data.categories || []);
+        setModel({ loaded: res.data.model_loaded, name: (res.data.model_name || '').split(/[\\/]/).slice(-2).join('/') });
+      })
+      .catch(() => setMessage({ kind: 'error', text: 'Settings could not be loaded.' }))
+      .finally(() => setLoading(false));
   }, []);
-
-  const fetchSettings = async () => {
-    try {
-      const res = await api.get('/settings');
-      setConfidenceThreshold(res.data.confidence_threshold);
-      setCategories(res.data.categories);
-      setModelName(res.data.model_loaded ? res.data.model_name : 'No model loaded (all documents go to human review)');
-    } catch (err) {
-      console.error('Failed to fetch settings', err);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const handleSave = async (e) => {
     e.preventDefault();
     setSaving(true);
-    setMessage('');
+    setMessage(null);
     try {
-      await api.patch('/settings', {
-        confidence_threshold: parseFloat(confidenceThreshold)
-      });
-      setMessage('System settings saved successfully!');
-    } catch (err) {
-      setMessage('Failed to update settings');
+      await api.patch('/settings', { confidence_threshold: Number(threshold) });
+      setSaved(Number(threshold));
+      setMessage({ kind: 'ok', text: `Saved. New uploads below ${threshold}% confidence now go to manual check.` });
+    } catch {
+      setMessage({ kind: 'error', text: 'The threshold could not be saved.' });
     } finally {
       setSaving(false);
     }
   };
 
+  if (loading) return <div className="loading">Loading settings…</div>;
+  const t = Number(threshold);
+
   return (
-    <div style={{ maxWidth: '640px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '24px' }}>
-      <div>
-        <h1 style={{ fontSize: '1.5rem', fontWeight: 700, color: '#f8fafc', display: 'flex', alignItems: 'center', gap: '10px' }}>
-          <SettingsIcon size={24} color="#06b6d4" />
-          System Configuration Settings
-        </h1>
-        <p style={{ fontSize: '0.85rem', color: '#94a3b8', marginTop: '4px' }}>
-          Configure AI confidence thresholds, document category definitions, and routing parameters.
-        </p>
+    <div className="page page-narrow">
+      <div className="page-head">
+        <div>
+          <h1 className="page-title">Settings</h1>
+          <p className="page-lede">How sure the model must be before a document is routed without a person.</p>
+        </div>
       </div>
 
-      <div className="glass-panel" style={{ padding: '32px' }}>
-        {message && (
-          <div style={{ background: 'rgba(16, 185, 129, 0.15)', border: '1px solid rgba(16, 185, 129, 0.3)', borderRadius: '8px', padding: '12px', color: '#34d399', fontSize: '0.85rem', marginBottom: '20px' }}>
-            {message}
+      {message && (
+        <div className={`notice ${message.kind === 'ok' ? 'notice-ok' : 'notice-error'}`} role={message.kind === 'ok' ? 'status' : 'alert'}>
+          <span>{message.text}</span>
+        </div>
+      )}
+
+      <form className="panel panel-body" onSubmit={handleSave} style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
+        <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', gap: 16, flexWrap: 'wrap' }}>
+          <div>
+            <label htmlFor="threshold" className="section-title">Confidence threshold</label>
+            <p className="hint">Applies to new uploads. Documents already routed keep their status.</p>
+          </div>
+          <span className="threshold-readout num" aria-live="polite">{t}%</span>
+        </div>
+
+        <div className="threshold-scale" aria-hidden="true">
+          <span className="zone-check" style={{ flexBasis: `${t}%` }}>{t >= 15 ? 'Manual check' : ''}</span>
+          <span className="zone-auto" style={{ flexBasis: `${100 - t}%` }}>{t <= 85 ? 'Routed by AI' : ''}</span>
+        </div>
+        <input
+          id="threshold"
+          className="range"
+          type="range"
+          min="0"
+          max="99"
+          step="1"
+          value={threshold}
+          onChange={(e) => setThreshold(e.target.value)}
+        />
+
+        <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', alignItems: 'center' }}>
+          <span className="hint">An invoice scored 82.1% would be</span>
+          <DestTag category="FINANCE" confidence={82.1} status={82.1 >= t ? 'AI VERIFIED' : 'HUMAN VERIFICATION REQUIRED'} />
+          <span className="hint">{82.1 >= t ? 'routed to Finance.' : 'held for a manual check.'}</span>
+        </div>
+
+        <div style={{ display: 'flex', gap: 10 }}>
+          <button type="submit" className="btn btn-primary" disabled={saving || t === saved}>
+            {saving ? 'Saving…' : 'Save threshold'}
+          </button>
+          {t !== saved && (
+            <button type="button" className="btn" onClick={() => setThreshold(saved)}>Undo</button>
+          )}
+        </div>
+      </form>
+
+      <section className="panel panel-body" style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+        <h2 className="section-title">Classifier</h2>
+        {model.loaded ? (
+          <p className="muted">Model in use: <strong style={{ color: 'var(--ink)' }}>{model.name}</strong>. Its departments are fixed by training:</p>
+        ) : (
+          <div className="notice notice-check" role="status">
+            <span>No trained model is loaded, so every document goes to manual check. Put a model in <code>models/classifier</code> and restart the backend.</span>
           </div>
         )}
-
-        <form onSubmit={handleSave} style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-          {/* Threshold Slider */}
-          <div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-              <label style={{ fontSize: '0.9rem', fontWeight: 600, color: '#f8fafc' }}>
-                AI Verification Confidence Threshold (%)
-              </label>
-              <span style={{ fontSize: '1.1rem', fontWeight: 700, color: '#06b6d4' }}>
-                {confidenceThreshold}%
-              </span>
-            </div>
-            <p style={{ fontSize: '0.8rem', color: '#64748b', marginBottom: '12px' }}>
-              Documents with AI classification confidence below this percentage will be automatically routed to the Human Verification Queue.
-            </p>
-            <input
-              type="range"
-              min="0"
-              max="99"
-              step="1"
-              value={confidenceThreshold}
-              onChange={(e) => setConfidenceThreshold(e.target.value)}
-              style={{ width: '100%', accentColor: '#06b6d4', cursor: 'pointer' }}
-            />
-          </div>
-
-          {/* Categories List */}
-          <div style={{ paddingTop: '16px', borderTop: '1px solid rgba(255, 255, 255, 0.08)' }}>
-            <label style={{ fontSize: '0.9rem', fontWeight: 600, color: '#f8fafc', display: 'block', marginBottom: '8px' }}>
-              Model Categories (fixed by the trained model)
-            </label>
-            <p style={{ fontSize: '0.8rem', color: '#64748b', marginBottom: '12px' }}>
-              Active model: {modelName}
-            </p>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
-              {categories.map((cat) => (
-                <span key={cat} className={`badge cat-${cat.toLowerCase()}`} style={{ padding: '6px 14px', fontSize: '0.8rem' }}>
-                  {cat}
-                </span>
-              ))}
-            </div>
-          </div>
-
-          <button
-            type="submit"
-            disabled={saving}
-            style={{
-              padding: '12px',
-              background: 'linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%)',
-              border: 'none',
-              borderRadius: '8px',
-              color: '#ffffff',
-              fontWeight: 600,
-              fontSize: '0.9rem',
-              cursor: saving ? 'not-allowed' : 'pointer',
-              boxShadow: '0 4px 15px rgba(6, 182, 212, 0.3)'
-            }}
-          >
-            {saving ? 'Saving Settings...' : 'Save Configuration'}
-          </button>
-        </form>
-      </div>
+        <div className="cat-tags">
+          {categories.map((c) => (
+            <span key={c} className="chip">{DEPARTMENTS[c] || c}</span>
+          ))}
+        </div>
+      </section>
     </div>
   );
 };

@@ -27,7 +27,8 @@ api.interceptors.response.use(
     if (error.response && error.response.status === 401) {
       localStorage.removeItem('AI Scategorizer_token');
       localStorage.removeItem('AI Scategorizer_user');
-      if (window.location.pathname !== '/login') {
+      // Public pages (the landing page and sign-in) stay put when an old token expires
+      if (!['/', '/login'].includes(window.location.pathname)) {
         window.location.href = '/login';
       }
     }
